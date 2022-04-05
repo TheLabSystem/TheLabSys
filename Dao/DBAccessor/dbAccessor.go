@@ -12,8 +12,7 @@ func MysqlInit() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	var db *gorm.DB
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("Database Connection Error,Happened in Dao.DBAccessor.MysqlInit()")
 		fmt.Println(err)
