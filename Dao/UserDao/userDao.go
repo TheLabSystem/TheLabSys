@@ -57,13 +57,14 @@ func convertUserToDao(user User.User) UserDao {
 }
 func InsertUser(user User.User) error {
 	var userDao = convertUserToDao(user)
-	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&userDao).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-		return nil
-	})
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Create(&userDao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
 	if err != nil {
 		fmt.Println("Error happened when inserting users in function UserDao.InsertUser()")
 	}
@@ -97,7 +98,7 @@ func UpdateUser(user User.User) error {
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Error happened when updating users in function UserDao.UpdateUserByID()")
+		fmt.Println("Error happened when updating users in function UserDao.UpdateUser()")
 	}
 	return err
 }
@@ -136,7 +137,7 @@ func FindUserByUsername(username string) (User.User, error) {
 	}
 	return user, err
 }
-func FindAllUser(offset int, limit int) ([]User.User, error) {
+func FindUserByOffset(offset int, limit int) ([]User.User, error) {
 	var daos = make([]UserDao, limit, limit)
 	var users = make([]User.User, limit, limit)
 	err := db.Transaction(func(tx *gorm.DB) error {

@@ -1,6 +1,6 @@
 //package test
 
-package main
+package test
 
 import (
 	"TheLabSystem/Dao/UserDao"
@@ -25,7 +25,7 @@ func testInsertUser(wt *sync.WaitGroup) {
 }
 
 // tested successfully
-func testDeleteUser(wt *sync.WaitGroup) {
+func testDeleteUser() {
 	var user = User.User{
 		UserID: 2,
 	}
@@ -33,7 +33,6 @@ func testDeleteUser(wt *sync.WaitGroup) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	wt.Done()
 }
 
 // tested successfully
@@ -49,15 +48,15 @@ func testUpdateUser() {
 }
 func main() {
 	//testUpdateUser()
-	testFindUser()
-	//testDeleteUser()
+	//testFindUser()
+	testDeleteUser()
 	//waiter := &sync.WaitGroup{}
 	//waiter.Add(90)
 	//for i := 1; i <= 90; i++ {
 	//	go testInsertUser(waiter)
 	//}
 	//waiter.Wait()
-	//users, err := UserDao.FindAllUser(1, 100)
+	//users, err := UserDao.FindUserByOffset(1, 100)
 	//if err != nil {
 	//	fmt.Println(err)
 	//} else {
