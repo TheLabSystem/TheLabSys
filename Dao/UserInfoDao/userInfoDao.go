@@ -38,8 +38,6 @@ func init() {
 }
 func ChangeUserInfo(userID uint, info string) error {
 	var userInfoDao UserInfoDao
-	userInfoDao.UserID = userID
-	userInfoDao.UserInfo = info
 	err := db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where("user_id=?", userID).First(&userInfoDao).Error; err != nil {
 			tx.Rollback()
@@ -47,6 +45,8 @@ func ChangeUserInfo(userID uint, info string) error {
 		}
 		return nil
 	})
+	userInfoDao.UserID = userID
+	userInfoDao.UserInfo = info
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		err = db.Transaction(func(tx *gorm.DB) error {
 			if err := tx.Create(&userInfoDao).Error; err != nil {
@@ -57,12 +57,13 @@ func ChangeUserInfo(userID uint, info string) error {
 		})
 	} else {
 		err = db.Transaction(func(tx *gorm.DB) error {
-			if err := tx.Model(&UserInfoDao{}).Updates(userInfoDao).Error; err != nil {
+			if err := tx.Model(&userInfoDao).Updates(&userInfoDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
 			return nil
 		})
+		fmt.Println()
 	}
 	if err != nil {
 		fmt.Println("Error happened when changing userinfo in function UserInfoDao.ChangeUserInfo()")
@@ -70,6 +71,20 @@ func ChangeUserInfo(userID uint, info string) error {
 	}
 	return err
 }
-func FindUserInfo() error {
-	return nil
+func FindUserInfoByID(userID uint) (string, error) {
+	var userInfoDao UserInfoDao
+	userInfoDao.UserID = userID
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("user_id=?", userID).First(&userInfoDao).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		fmt.Println("Error happened when finding userinfo in function UserInfoDao.FindUserByID()")
+		fmt.Println(err)
+		return "", err
+	}
+	return userInfoDao.UserInfo, err
 }

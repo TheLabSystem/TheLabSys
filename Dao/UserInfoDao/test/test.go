@@ -1,5 +1,6 @@
-//package test
-package main
+package test
+
+//package main
 
 import (
 	"TheLabSystem/Dao/UserInfoDao"
@@ -7,5 +8,6 @@ import (
 )
 
 func main() {
-	fmt.Println(UserInfoDao.ChangeUserInfo(2, "hello212"))
+	fmt.Println(UserInfoDao.ChangeUserInfo(3, "hello world,I am OceanCT"))
+	fmt.Println(UserInfoDao.FindUserInfoByID(3))
 }
