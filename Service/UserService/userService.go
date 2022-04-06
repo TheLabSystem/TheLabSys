@@ -11,7 +11,7 @@ import (
 type UserService struct {
 }
 
-func (userService *UserService) CheckPassword(username string, password string) (ErrNo.ErrNo, User.User, string) {
+func (userService UserService) CheckPassword(username string, password string) (ErrNo.ErrNo, User.User, string) {
 	user, err := UserDao.FindUserByUsername(username)
 	fmt.Println(user)
 	if err != nil {
@@ -23,4 +23,25 @@ func (userService *UserService) CheckPassword(username string, password string) 
 		info, _ := UserInfoDao.FindUserInfoByID(user.UserID)
 		return ErrNo.OK, user, info
 	}
+}
+func (userService UserService) ChangeUserInfo(username string, password string, displayName string, userInfo string) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if displayName != "" {
+		user.DisplayName = displayName
+	}
+	if password != "" {
+		user.Password = password
+	}
+	if UserDao.UpdateUser(user) != nil {
+		return ErrNo.UnknownError
+	}
+	if userInfo != "" {
+		if UserInfoDao.ChangeUserInfo(user.UserID, userInfo) != nil {
+			return ErrNo.UnknownError
+		}
+	}
+	return ErrNo.OK
 }
