@@ -1,10 +1,16 @@
 package RegisterUserRequestAndResponse
 
+import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
+
 type RegisterUserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	UserType string `json:"user_type"`
+	Username   string `json:"username"`
+	Password   string `json:"password"`
+	UserType   int    `json:"user_type"`
+	VerifyCode int    `json:"verify_code"`
 }
 type RegisterUserResponse struct {
-	Code error
+	Code ErrNo.ErrNo
+	Data struct {
+		Message string `json:"message"`
+	}
 }
