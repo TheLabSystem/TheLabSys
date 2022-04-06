@@ -2,7 +2,7 @@ package MentorRecordDao
 
 import (
 	"TheLabSystem/Dao/DBAccessor"
-	"TheLabSystem/Types/MentorRecord"
+	"TheLabSystem/Types/ServiceType/MentorRecord"
 	"fmt"
 	"gorm.io/gorm"
 )

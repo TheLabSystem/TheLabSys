@@ -2,7 +2,7 @@ package test
 
 import (
 	"TheLabSystem/Dao/MentorRecordDao"
-	"TheLabSystem/Types/MentorRecord"
+	"TheLabSystem/Types/ServiceType/MentorRecord"
 	"fmt"
 	"sync"
 )

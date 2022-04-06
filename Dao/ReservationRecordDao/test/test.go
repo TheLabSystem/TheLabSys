@@ -2,7 +2,7 @@ package test
 
 import (
 	"TheLabSystem/Dao/ReservationRecordDao"
-	"TheLabSystem/Types/ReservationRecord"
+	"TheLabSystem/Types/ServiceType/ReservationRecord"
 	"fmt"
 	"sync"
 )

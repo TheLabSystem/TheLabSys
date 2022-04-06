@@ -2,7 +2,7 @@ package ReservationRecordDao
 
 import (
 	"TheLabSystem/Dao/DBAccessor"
-	"TheLabSystem/Types/ReservationRecord"
+	"TheLabSystem/Types/ServiceType/ReservationRecord"
 	"fmt"
 	"gorm.io/gorm"
 )
