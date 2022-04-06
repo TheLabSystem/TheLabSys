@@ -9,10 +9,11 @@ import (
 
 type UserDao struct {
 	gorm.Model
-	Username    string `gorm:"type:varchar(25)"`
-	UserType    int    `gorm:"type:integer"`
-	DisplayName string `gorm:"type:varchar(25)"`
-	Password    string `gorm:"type:varchar(30)"`
+	Username    string  `gorm:"type:varchar(25)"`
+	UserType    int     `gorm:"type:integer"`
+	DisplayName string  `gorm:"type:varchar(25)"`
+	Password    string  `gorm:"type:varchar(30)"`
+	Money       float64 `gorm:"type:double"`
 }
 
 var db *gorm.DB
@@ -45,6 +46,7 @@ func convertDaoToUser(dao UserDao) User.User {
 		UserType:    dao.UserType,
 		DisplayName: dao.DisplayName,
 		Password:    dao.Password,
+		Money:       dao.Money,
 	}
 }
 func convertUserToDao(user User.User) UserDao {
@@ -53,6 +55,7 @@ func convertUserToDao(user User.User) UserDao {
 		Username:    user.Username,
 		DisplayName: user.DisplayName,
 		Password:    user.Password,
+		Money:       user.Money,
 	}
 }
 func InsertUser(user User.User) error {

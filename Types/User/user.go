@@ -6,4 +6,5 @@ type User struct {
 	UserType    int
 	DisplayName string
 	Password    string
+	Money       float64
 }

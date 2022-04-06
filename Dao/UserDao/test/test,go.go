@@ -1,6 +1,6 @@
 //package test
 
-package test
+package main
 
 import (
 	"TheLabSystem/Dao/UserDao"
@@ -16,6 +16,7 @@ func testInsertUser(wt *sync.WaitGroup) {
 		Username:    "OceanCT",
 		DisplayName: "OceanCT",
 		Password:    "123455",
+		Money:       121212.2349,
 	}
 	err := UserDao.InsertUser(user)
 	if err != nil {
@@ -49,19 +50,19 @@ func testUpdateUser() {
 func main() {
 	//testUpdateUser()
 	//testFindUser()
-	testDeleteUser()
-	//waiter := &sync.WaitGroup{}
-	//waiter.Add(90)
-	//for i := 1; i <= 90; i++ {
-	//	go testInsertUser(waiter)
-	//}
-	//waiter.Wait()
-	//users, err := UserDao.FindUserByOffset(1, 100)
-	//if err != nil {
-	//	fmt.Println(err)
-	//} else {
-	//	for key := range users {
-	//		fmt.Println(users[key])
-	//	}
-	//}
+	//testDeleteUser()
+	waiter := &sync.WaitGroup{}
+	waiter.Add(90)
+	for i := 1; i <= 90; i++ {
+		go testInsertUser(waiter)
+	}
+	waiter.Wait()
+	users, err := UserDao.FindUserByOffset(1, 100)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		for key := range users {
+			fmt.Println(users[key])
+		}
+	}
 }
