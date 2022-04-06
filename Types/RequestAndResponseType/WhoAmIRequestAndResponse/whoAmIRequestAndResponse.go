@@ -11,6 +11,7 @@ type WhoAmIRequest struct {
 type WhoAmIResponse struct {
 	Code ErrNo.ErrNo
 	Data struct {
-		User User.User
+		User    User.User
+		Message string `json:"message"`
 	}
 }
