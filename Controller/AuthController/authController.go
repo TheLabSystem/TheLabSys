@@ -1,6 +1,7 @@
 package AuthController
 
 import (
+	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Service/UserService"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
@@ -56,15 +57,20 @@ func (controller AuthController) WhoAmI(c *gin.Context) {
 	cookie, err := c.Request.Cookie("camp-session")
 	if err != nil {
 		whoAmIResponse.Code = ErrNo.LoginRequired
+		whoAmIResponse.Data.Message = ErrorInformation.GenerateErrorInformation(whoAmIResponse.Code)
+		c.JSON(http.StatusOK, whoAmIResponse)
 		return
 	}
 	whoAmIResponse.Data.User, err = UserDao.FindUserByUsername(cookie.Value)
 	if err != nil {
 		whoAmIResponse.Code = ErrNo.UnknownError
+		whoAmIResponse.Data.Message = ErrorInformation.GenerateErrorInformation(whoAmIResponse.Code)
 	} else if whoAmIResponse.Data.User.UserID == 0 {
 		whoAmIResponse.Code = ErrNo.UserNotExisted
+		whoAmIResponse.Data.Message = ErrorInformation.GenerateErrorInformation(whoAmIResponse.Code)
 	} else {
 		whoAmIResponse.Code = ErrNo.OK
+		whoAmIResponse.Data.Message = ErrorInformation.GenerateErrorInformation(whoAmIResponse.Code)
 	}
 	c.JSON(http.StatusOK, whoAmIResponse)
 }
