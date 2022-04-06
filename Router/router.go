@@ -15,4 +15,5 @@ func RegisterRouter(r *gin.Engine) {
 
 	// user
 	g.POST("/user/changeUserInfo", UserServiceController.UserServiceController{}.ChangeUserInfo)
+	g.POST("/user/register", UserServiceController.UserServiceController{}.RegisterUser)
 }
