@@ -1,10 +1,11 @@
-//package test
-package main
+package test
 
-import (
-	"TheLabSystem/Dao/VerifyCodeDao"
-)
-
-func main() {
-	VerifyCodeDao.InsertVerifyCode(10203, 1)
-}
+//package main
+//
+//import (
+//	"TheLabSystem/Dao/VerifyCodeDao"
+//)
+//
+//func main() {
+//	VerifyCodeDao.InsertVerifyCode(10203, 1)
+//}
