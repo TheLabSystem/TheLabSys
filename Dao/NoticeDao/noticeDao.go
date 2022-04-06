@@ -2,7 +2,7 @@ package NoticeDao
 
 import (
 	"TheLabSystem/Dao/DBAccessor"
-	"TheLabSystem/Types/Notice"
+	"TheLabSystem/Types/ServiceType/Notice"
 	"fmt"
 	"gorm.io/gorm"
 )

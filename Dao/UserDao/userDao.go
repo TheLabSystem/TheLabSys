@@ -2,7 +2,8 @@ package UserDao
 
 import (
 	"TheLabSystem/Dao/DBAccessor"
-	"TheLabSystem/Types/User"
+	"TheLabSystem/Types/ServiceType/User"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -133,10 +134,13 @@ func FindUserByUsername(username string) (User.User, error) {
 		}
 		return nil
 	})
-	if err != nil {
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		err = nil
+	} else if err != nil {
 		fmt.Println("Error happened when finding users in function UserDao.FindUserByUsername()")
 	} else {
 		user = convertDaoToUser(userDao)
+		user.UserID = userDao.ID
 	}
 	return user, err
 }

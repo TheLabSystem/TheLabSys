@@ -2,7 +2,7 @@ package main
 
 import (
 	"TheLabSystem/Dao/NoticeDao"
-	"TheLabSystem/Types/Notice"
+	"TheLabSystem/Types/ServiceType/Notice"
 	"fmt"
 	"sync"
 )

@@ -4,7 +4,7 @@ package main
 
 import (
 	"TheLabSystem/Dao/UserDao"
-	"TheLabSystem/Types/User"
+	"TheLabSystem/Types/ServiceType/User"
 	"fmt"
 	"sync"
 )
