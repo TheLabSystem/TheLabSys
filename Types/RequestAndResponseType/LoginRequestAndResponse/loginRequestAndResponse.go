@@ -10,7 +10,7 @@ type LoginRequest struct {
 	Password string `json:"Password" binding:"required"`
 }
 type LoginResponse struct {
-	Code ErrNo.ErrNo `json:"ErrCode" binding:"required"`
+	Code ErrNo.ErrNo `json:"Code" binding:"required"`
 	Data struct {
 		Message  string `json:"message" binding:"required"`
 		User     User.User
