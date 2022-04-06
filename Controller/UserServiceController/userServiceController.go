@@ -5,6 +5,7 @@ import (
 	"TheLabSystem/Service/UserService"
 	"TheLabSystem/Types/RequestAndResponseType/ChangeUserInfoRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/RequestAndResponseType/RegisterUserRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -32,5 +33,13 @@ func (controller UserServiceController) ChangeUserInfo(c *gin.Context) {
 }
 
 func (controller UserServiceController) RegisterUser(c *gin.Context) {
-
+	request := &RegisterUserRequestAndResponse.RegisterUserRequest{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	response := &RegisterUserRequestAndResponse.RegisterUserResponse{}
+	response.Code = UserService.UserService{}.RegisterUser(request.Username, request.Password, request.UserType, request.VerifyCode)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
 }
