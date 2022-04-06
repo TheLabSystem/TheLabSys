@@ -28,13 +28,7 @@ func (controller AuthController) Login(c *gin.Context) {
 	loginResponse.Code = errNo
 	loginResponse.Data.Userinfo = userinfo
 	loginResponse.Data.User = user
-	if errNo == ErrNo.OK {
-		loginResponse.Data.Message = "Log in successfully"
-	} else if errNo == ErrNo.WrongPassword {
-		loginResponse.Data.Message = "Wrong Password!"
-	} else if errNo == ErrNo.UnknownError {
-		loginResponse.Data.Message = "An unexpected error has happened.Please try again."
-	}
+	loginResponse.Data.Message = ErrorInformation.GenerateErrorInformation(loginResponse.Code)
 	c.SetCookie("camp-session", loginRequest.Username, 0, "/", "/", false, false)
 	c.JSON(http.StatusOK, loginResponse)
 }
