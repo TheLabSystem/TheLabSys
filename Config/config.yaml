@@ -4,4 +4,4 @@ database:
   port: 3306
   name: LabSysDB
   username: root
-  password: 714825936QY
+  password: 123456
