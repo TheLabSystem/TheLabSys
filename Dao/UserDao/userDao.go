@@ -138,6 +138,7 @@ func FindUserByUsername(username string) (User.User, error) {
 		err = nil
 	} else if err != nil {
 		fmt.Println("Error happened when finding users in function UserDao.FindUserByUsername()")
+		fmt.Println(err)
 	} else {
 		user = convertDaoToUser(userDao)
 		user.UserID = userDao.ID
