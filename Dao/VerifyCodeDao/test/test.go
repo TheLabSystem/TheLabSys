@@ -4,9 +4,11 @@ package main
 
 import (
 	"TheLabSystem/Dao/VerifyCodeDao"
+	"fmt"
 )
 
 func main() {
-	//VerifyCodeDao.InsertVerifyCode(10203, 1)
-	VerifyCodeDao.DeleteVerifyCode(10203)
+	//VerifyCodeDao.InsertVerifyCode(1, 4)
+	//VerifyCodeDao.DeleteVerifyCode(10203)
+	fmt.Println(VerifyCodeDao.CheckVerifyCode(1, 4))
 }
