@@ -30,12 +30,7 @@ func connectDatabase() {
 	}
 }
 func init() {
-	// if table does not exist, then create table
 	connectDatabase()
-	//for DBErr != nil {
-	//	time.Sleep(30000)
-	//	connectDatabase()
-	//}
 }
 func (UserDao) TableName() string {
 	return "users"

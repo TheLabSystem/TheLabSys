@@ -55,6 +55,7 @@ func InsertMentorRecord(mr MentorRecord.MentorRecord) error {
 		})
 	if err != nil {
 		fmt.Println("Error happened when inserting mentorRecords in function MentorRecordDao.InsertMentorRecord()")
+		fmt.Println(err)
 	}
 	return err
 }
