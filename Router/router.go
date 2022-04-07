@@ -3,6 +3,7 @@ package Router
 import (
 	"TheLabSystem/Controller/AuthController"
 	"TheLabSystem/Controller/UserServiceController"
+	"TheLabSystem/Controller/VerifyCodeController"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,4 +17,7 @@ func RegisterRouter(r *gin.Engine) {
 	// user
 	g.POST("/user/changeUserInfo", UserServiceController.UserServiceController{}.ChangeUserInfo)
 	g.POST("/user/register", UserServiceController.UserServiceController{}.RegisterUser)
+
+	// verify code
+	g.POST("/verifyCode/addVerifyCode", VerifyCodeController.VerifyCodeController{}.AddVerifyCodeController)
 }
