@@ -2,6 +2,7 @@ package Router
 
 import (
 	"TheLabSystem/Controller/AuthController"
+	"TheLabSystem/Controller/BillController"
 	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
 	"github.com/gin-gonic/gin"
@@ -22,4 +23,6 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/verifyCode/addVerifyCode", VerifyCodeController.VerifyCodeController{}.AddVerifyCodeController)
 	g.POST("/verifyCode/viewAllVerifyCode", VerifyCodeController.VerifyCodeController{}.ViewAllVerifyCode)
 	g.POST("/verifyCode/deleteVerifyCode", VerifyCodeController.VerifyCodeController{}.DeleteVerifyCode)
+
+	g.GET("/bill/getBill", BillController.BillController{}.GetBill)
 }
