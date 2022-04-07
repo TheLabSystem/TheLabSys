@@ -7,7 +7,7 @@ type AddVerifyCodeRequest struct {
 	UserType   int `json:"user_type"`
 }
 type AddVerifyCodeResponse struct {
-	Code ErrNo.ErrNo `json:"code"`
+	Code ErrNo.ErrNo `json:"Code"`
 	Data struct {
 		Message string `json:"message"`
 	}
