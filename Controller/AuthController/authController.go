@@ -4,10 +4,10 @@ import (
 	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Service/UserService"
+	"TheLabSystem/Types/RequestAndResponseType/Auth/LoginRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Auth/LogoutRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Auth/WhoAmIRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
-	"TheLabSystem/Types/RequestAndResponseType/LoginRequestAndResponse"
-	"TheLabSystem/Types/RequestAndResponseType/LogoutRequestAndResponse"
-	"TheLabSystem/Types/RequestAndResponseType/WhoAmIRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

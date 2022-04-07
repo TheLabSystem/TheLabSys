@@ -3,9 +3,9 @@ package UserServiceController
 import (
 	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Service/UserService"
-	"TheLabSystem/Types/RequestAndResponseType/ChangeUserInfoRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
-	"TheLabSystem/Types/RequestAndResponseType/RegisterUserRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/UerService/ChangeUserInfoRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/UerService/RegisterUserRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
