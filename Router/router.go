@@ -2,8 +2,9 @@ package Router
 
 import (
 	"TheLabSystem/Controller/AuthController"
-	"TheLabSystem/Controller/UserServiceController"
+	"TheLabSystem/Controller/BillController"
 	"TheLabSystem/Controller/MentalListController"
+	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,7 @@ func RegisterRouter(r *gin.Engine) {
 
 	// bill
 	g.GET("/bill/getBill", BillController.BillController{}.GetBill)
+	g.POST("/bill/payBill", BillController.BillController{}.PayBill)
 
 	// mentorList service
 	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
