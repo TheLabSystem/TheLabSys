@@ -3,6 +3,6 @@ package Bill
 type Bill struct {
 	BillID     uint
 	PayerID    uint
-	Money      int
+	Money      float64
 	BillStatus int
 }

@@ -27,5 +27,8 @@ func GenerateErrorInformation(code ErrNo.ErrNo) string {
 	if code == ErrNo.StudentNotExist {
 		return "The student doesn't exist.Please check and try again."
 	}
+	if code == ErrNo.MoneyNotEnough {
+		return "Your account doesn't have enough money to pay this bill!"
+	}
 	return "Success!"
 }
