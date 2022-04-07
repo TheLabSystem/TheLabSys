@@ -9,8 +9,8 @@ import (
 
 type VerifyCodeDao struct {
 	gorm.Model
-	verifyCode int `gorm:"type(integer)"`
-	usertype   int `gorm:"type(integer)"`
+	VerifyCode int `gorm:"type(integer)"`
+	UserType   int `gorm:"type(integer)"`
 }
 
 var db *gorm.DB
@@ -28,10 +28,13 @@ func connectDatabase() {
 func init() {
 	connectDatabase()
 }
+func (VerifyCodeDao) TableName() string {
+	return "verify_code"
+}
 func InsertVerifyCode(code int, userType int) error {
 	var verifyCodeDao = VerifyCodeDao{
-		verifyCode: code,
-		usertype:   userType,
+		VerifyCode: code,
+		UserType:   userType,
 	}
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
@@ -39,23 +42,24 @@ func InsertVerifyCode(code int, userType int) error {
 				tx.Rollback()
 				return err
 			}
+			fmt.Println(verifyCodeDao)
 			return nil
 		})
 	if err != nil {
-		fmt.Println("Error happened when inserting verifyCode in function VerifyCodeDao.InsertVerifyCode()")
+		fmt.Println("Error happened when inserting VerifyCode in function VerifyCodeDao.InsertVerifyCode()")
 	}
 	return err
 }
 func DeleteVerifyCode(code int) error {
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(&VerifyCodeDao{verifyCode: code}).Delete(VerifyCodeDao{}).Error; err != nil {
+		if err := tx.Where(&VerifyCodeDao{VerifyCode: code}).Delete(VerifyCodeDao{}).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Error happened when deleting verifyCode in function VerifyCode.DeleteVerifyCode()")
+		fmt.Println("Error happened when deleting VerifyCode in function VerifyCode.DeleteVerifyCode()")
 		fmt.Println(err)
 	}
 	return nil
@@ -71,29 +75,33 @@ func ViewVerifyCode() ([]VerifyCode.VerifyCode, error) {
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Error happened when viewing verifyCode in function VerifyCode.ViewVerifyCode()")
+		fmt.Println("Error happened when viewing VerifyCode in function VerifyCode.ViewVerifyCode()")
 		fmt.Println(err)
 	}
 	sliceLen := len(daos)
 	res = make([]VerifyCode.VerifyCode, sliceLen, sliceLen)
+	for key := range daos {
+		res[key].VerifyCode = daos[key].VerifyCode
+		res[key].UserType = daos[key].UserType
+	}
 	return res, err
 }
 func CheckVerifyCode(code int, userType int) (bool, error) {
 	var daos []VerifyCodeDao
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(&VerifyCodeDao{verifyCode: code}).Find(&daos).Error; err != nil {
+		if err := tx.Where(&VerifyCodeDao{VerifyCode: code}).Find(&daos).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Error happened when checking verifyCode in function VerifyCode.CheckVerifyCode()")
+		fmt.Println("Error happened when checking VerifyCode in function VerifyCode.CheckVerifyCode()")
 		fmt.Println(err)
 		return false, err
 	}
 	for key := range daos {
-		if daos[key].usertype == userType {
+		if daos[key].UserType == userType {
 			return true, err
 		}
 	}
