@@ -86,3 +86,18 @@ func (userService UserService) FindUserInfo(username string) (ErrNo.ErrNo, User.
 	}
 	return ErrNo.OK, user, info
 }
+func (userService UserService) AddMoneyService(money float64, username string) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return ErrNo.UserNotExisted
+	}
+	user.Money = user.Money + money
+	err = UserDao.UpdateUser(user)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	return ErrNo.OK
+}

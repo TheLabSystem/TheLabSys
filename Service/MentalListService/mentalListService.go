@@ -60,3 +60,23 @@ func (service MentalListService) DeleteStudent(studentID uint, username string) 
 		return ErrNo.OK
 	}
 }
+
+func (service MentalListService) ViewStudent(username string) ([]MentorRecord.MentorRecord, ErrNo.ErrNo) {
+	var res []MentorRecord.MentorRecord
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	if user.UserType != 3 {
+		return res, ErrNo.PermDenied
+	}
+	res, err = MentorRecordDao.FindMentorRecordByTeacherID(user.UserID)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else {
+		return res, ErrNo.OK
+	}
+}
