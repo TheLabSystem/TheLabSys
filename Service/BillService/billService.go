@@ -24,3 +24,28 @@ func (billService BillService) GetBill(username string) ([]Bill.Bill, ErrNo.ErrN
 	}
 	return bill, ErrNo.OK
 }
+
+func (billService BillService) PayBill(billID uint, username string) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
+	bill, err := BillDao.FindBillByBillID(billID)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if bill.Money > user.Money {
+		return ErrNo.MoneyNotEnough
+	} else {
+		if err := UserDao.UpdateMoney(user, user.Money-bill.Money); err != nil {
+			return ErrNo.PermDenied
+		}
+		if err := BillDao.UpdateBillStatus(billID, 1); err != nil {
+			return ErrNo.UnknownError
+		}
+	}
+	return ErrNo.OK
+}
