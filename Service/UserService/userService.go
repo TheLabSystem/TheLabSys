@@ -71,3 +71,18 @@ func (userService UserService) RegisterUser(username string, password string, us
 	}
 	return ErrNo.OK
 }
+func (userService UserService) FindUserInfo(username string) (ErrNo.ErrNo, User.User, string) {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError, user, ""
+	}
+	if user.Username == "" {
+		return ErrNo.UserNotExisted, user, ""
+	}
+	var info string
+	info, err = UserInfoDao.FindUserInfoByID(user.UserID)
+	if err != nil {
+		return ErrNo.UnknownError, user, info
+	}
+	return ErrNo.OK, user, info
+}

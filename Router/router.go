@@ -5,6 +5,8 @@ import (
 	"TheLabSystem/Controller/BillController"
 	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/UserServiceController"
+	"TheLabSystem/Controller/MentalListController"
+	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
 	"github.com/gin-gonic/gin"
 )
@@ -31,5 +33,5 @@ func RegisterRouter(r *gin.Engine) {
 
 	// mentorList service
 	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
-
+	g.POST("/mentalList/deleteStudent", MentalListController.MentalListController{}.DeleteStudentController)
 }
