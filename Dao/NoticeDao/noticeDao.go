@@ -4,13 +4,15 @@ import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Types/ServiceType/Notice"
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
 type NoticeDao struct {
 	gorm.Model
-	NoticeInfo string `gorm:"type:text(65535)"`
-	IssuerID   int    `gorm:"type:integer"`
+	Title    string `gorm:"type:varchar(255)"`
+	Content  string `gorm:"type:text(65535)"`
+	IssuerID uint   `gorm:"type:integer"`
 }
 
 var db *gorm.DB
@@ -33,15 +35,17 @@ func (NoticeDao) TableName() string {
 }
 func convertDaoToNotice(dao NoticeDao) Notice.Notice {
 	return Notice.Notice{
-		NoticeID:   dao.ID,
-		NoticeInfo: dao.NoticeInfo,
-		IssuerID:   dao.IssuerID,
+		NoticeID: dao.ID,
+		Title:    dao.Title,
+		Content:  dao.Content,
+		IssuerID: dao.IssuerID,
 	}
 }
 func convertNoticeToDao(notice Notice.Notice) NoticeDao {
 	return NoticeDao{
-		NoticeInfo: notice.NoticeInfo,
-		IssuerID:   notice.IssuerID,
+		Title:    notice.Title,
+		Content:  notice.Content,
+		IssuerID: notice.IssuerID,
 	}
 }
 func InsertNotice(notice Notice.Notice) error {
