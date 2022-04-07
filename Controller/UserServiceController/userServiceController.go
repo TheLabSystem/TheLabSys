@@ -4,8 +4,8 @@ import (
 	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Service/UserService"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
-	"TheLabSystem/Types/RequestAndResponseType/UerService/ChangeUserInfoRequestAndResponse"
-	"TheLabSystem/Types/RequestAndResponseType/UerService/RegisterUserRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/UserService/ChangeUserInfoRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/UserService/RegisterUserRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
