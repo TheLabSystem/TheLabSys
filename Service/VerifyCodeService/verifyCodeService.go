@@ -5,13 +5,14 @@ import (
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Dao/VerifyCodeDao"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/ServiceType/VerifyCode"
 )
 
 type VerifyCodeService struct {
 }
 
 func (service VerifyCodeService) AddVerifyCode(code int, usertype int, username string) ErrNo.ErrNo {
-	// check password
+	// check permission
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
 		return ErrNo.UnknownError
@@ -27,5 +28,25 @@ func (service VerifyCodeService) AddVerifyCode(code int, usertype int, username 
 		return ErrNo.OK
 	} else {
 		return ErrNo.PermDenied
+	}
+}
+
+func (service VerifyCodeService) ViewAllVerifyCode(username string) ([]VerifyCode.VerifyCode, ErrNo.ErrNo) {
+	// check permission
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return nil, ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return nil, ErrNo.LoginRequired
+	}
+	if UserPermissionDecide.ViewVerifyCode(user.UserType) {
+		res, err := VerifyCodeDao.ViewVerifyCode()
+		if err != nil {
+			return nil, ErrNo.UnknownError
+		}
+		return res, ErrNo.OK
+	} else {
+		return nil, ErrNo.PermDenied
 	}
 }
