@@ -9,9 +9,9 @@ import (
 
 type BillDao struct {
 	gorm.Model
-	PayerID    uint `gorm:"type:uint"`
-	Money      int  `gorm:"type:int"`
-	BillStatus int  `gorm:"type:int"`
+	PayerID    uint    `gorm:"type:uint"`
+	Money      float64 `gorm:"type:int"`
+	BillStatus int     `gorm:"type:int"`
 }
 
 var db *gorm.DB
@@ -83,11 +83,29 @@ func FindBillsByPayerID(id uint) ([]Bill.Bill, error) {
 	}
 	return bill, err
 }
-func UpdateBillStatus(id int, status int) error {
+func FindBillByBillID(id uint) (Bill.Bill, error) {
+	var bill Bill.Bill
 	var billDao BillDao
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Model(&billDao).Where("payer_id=?", id).Update("bill_status", status).Error; err != nil {
+			if err := tx.Where("id=?", id).Find(&billDao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if err != nil {
+		fmt.Println("Error happened when finding bills in function BillDao.FindBillByPayerID()")
+	} else {
+		bill = convertDaoToBill(billDao)
+	}
+	return bill, err
+}
+func UpdateBillStatus(id uint, status int) error {
+	var billDao BillDao
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Model(&billDao).Where("id=?", id).Update("bill_status", status).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
