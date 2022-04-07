@@ -52,14 +52,14 @@ func InsertVerifyCode(code int, userType int) error {
 }
 func DeleteVerifyCode(code int) error {
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where(&VerifyCodeDao{VerifyCode: code}).Delete(VerifyCodeDao{}).Error; err != nil {
+		if err := tx.Where("verify_code = ?", code).Delete(&VerifyCodeDao{}).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
 		return nil
 	})
 	if err != nil {
-		fmt.Println("Error happened when deleting VerifyCode in function VerifyCode.DeleteVerifyCode()")
+		fmt.Println("Error happened when deleting VerifyCode in function VerifyCode.DeleteVerifyCodeRequestAndResponse()")
 		fmt.Println(err)
 	}
 	return nil
