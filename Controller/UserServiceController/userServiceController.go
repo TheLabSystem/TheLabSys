@@ -5,6 +5,7 @@ import (
 	"TheLabSystem/Service/UserService"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/UerService/ChangeUserInfoRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/UerService/FindUserInfoRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/UerService/RegisterUserRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -40,6 +41,24 @@ func (controller UserServiceController) RegisterUser(c *gin.Context) {
 	}
 	response := &RegisterUserRequestAndResponse.RegisterUserResponse{}
 	response.Code = UserService.UserService{}.RegisterUser(request.Username, request.Password, request.UserType, request.VerifyCode)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+}
+
+func (controller UserServiceController) FindUserInfo(c *gin.Context) {
+	request := &FindUserInfoRequestAndResponse.FindUserInfoRequest{}
+	response := &FindUserInfoRequestAndResponse.FindUserInfoResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Code, response.Data.User, response.Data.UserInfo = UserService.UserService{}.FindUserInfo(cookie)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }
