@@ -6,6 +6,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/MentalList/AddStudentRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/MentalList/DeleteStudentRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/MentalList/ViewStudentRequestAndResponse"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -47,6 +48,25 @@ func (controller MentalListController) DeleteStudentController(c *gin.Context) {
 		return
 	}
 	response.Code = MentalListService.MentalListService{}.DeleteStudent(request.StudentID, cookie)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+}
+
+func (controller MentalListController) ViewStudentController(c *gin.Context) {
+	var request = &ViewStudentRequestAndResponse.ViewStudentRequest{}
+	var response = &ViewStudentRequestAndResponse.ViewStudentResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Data.MentorRecords, response.Code = MentalListService.MentalListService{}.ViewStudent(cookie)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }

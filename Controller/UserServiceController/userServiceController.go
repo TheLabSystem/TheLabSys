@@ -4,6 +4,7 @@ import (
 	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Service/UserService"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/RequestAndResponseType/UserService/AddMoneyServiceRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/UserService/ChangeUserInfoRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/UserService/FindUserInfoRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/UserService/RegisterUserRequestAndResponse"
@@ -59,6 +60,24 @@ func (controller UserServiceController) FindUserInfo(c *gin.Context) {
 		return
 	}
 	response.Code, response.Data.User, response.Data.UserInfo = UserService.UserService{}.FindUserInfo(cookie)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+}
+
+func (controller UserServiceController) AddMoney(c *gin.Context) {
+	request := &AddMoneyServiceRequestAndResponse.AddMoneyServiceRequest{}
+	response := &AddMoneyServiceRequestAndResponse.AddMoneyServiceResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Code = UserService.UserService{}.AddMoneyService(request.Money, cookie)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }
