@@ -18,6 +18,7 @@ func RegisterRouter(r *gin.Engine) {
 	// user
 	g.POST("/user/changeUserInfo", UserServiceController.UserServiceController{}.ChangeUserInfo)
 	g.POST("/user/register", UserServiceController.UserServiceController{}.RegisterUser)
+	g.POST("/user/findUserInfo", UserServiceController.UserServiceController{}.FindUserInfo)
 
 	// verify code
 	g.POST("/verifyCode/addVerifyCode", VerifyCodeController.VerifyCodeController{}.AddVerifyCodeController)
@@ -26,4 +27,5 @@ func RegisterRouter(r *gin.Engine) {
 
 	// mentorList service
 	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
+	g.POST("/mentalList/deleteStudent", MentalListController.MentalListController{}.DeleteStudentController)
 }
