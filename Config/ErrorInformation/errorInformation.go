@@ -21,7 +21,7 @@ func GenerateErrorInformation(code ErrNo.ErrNo) string {
 	if code == ErrNo.PermDenied {
 		return "Sorry.You don't have permission to do so."
 	}
-	if code == ErrNo.VerifyCodeNotVaild {
+	if code == ErrNo.VerifyCodeNotValid {
 		return "It seems that the verify code is not valid now.Try connecting the administrator."
 	}
 	return "Success!"
