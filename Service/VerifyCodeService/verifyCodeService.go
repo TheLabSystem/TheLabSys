@@ -50,3 +50,19 @@ func (service VerifyCodeService) ViewAllVerifyCode(username string) ([]VerifyCod
 		return nil, ErrNo.PermDenied
 	}
 }
+
+func (service VerifyCodeService) DeleteVerifyCode(code int, username string) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if UserPermissionDecide.DeleteVerifyCode(user.UserType) {
+		err := VerifyCodeDao.DeleteVerifyCode(code)
+		if err != nil {
+			return ErrNo.UnknownError
+		}
+		return ErrNo.OK
+	} else {
+		return ErrNo.PermDenied
+	}
+}

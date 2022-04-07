@@ -46,12 +46,12 @@ func (userService UserService) ChangeUserInfo(username string, password string, 
 	}
 	return ErrNo.OK
 }
-func (userService UserService) RegisterUser(username string, password string, userType int, verify_code int) ErrNo.ErrNo {
-	verify, err := VerifyCodeDao.CheckVerifyCode(verify_code, userType)
+func (userService UserService) RegisterUser(username string, password string, userType int, verifyCode int) ErrNo.ErrNo {
+	verify, err := VerifyCodeDao.CheckVerifyCode(verifyCode, userType)
 	if err != nil {
 		return ErrNo.UnknownError
 	} else if verify == false {
-		return ErrNo.VerifyCodeNotVaild
+		return ErrNo.VerifyCodeNotValid
 	}
 	var user User.User
 	user, err = UserDao.FindUserByUsername(username)
