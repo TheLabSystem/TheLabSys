@@ -2,9 +2,9 @@ package Router
 
 import (
 	"TheLabSystem/Controller/AuthController"
+	"TheLabSystem/Controller/BillController"
 	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/UserServiceController"
-	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/VerifyCodeController"
 	"github.com/gin-gonic/gin"
 )
