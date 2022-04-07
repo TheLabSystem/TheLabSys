@@ -5,7 +5,7 @@ func AddVerifyCode(UserType int) bool {
 }
 
 func ViewVerifyCode(UserType int) bool {
-	return UserType >= 1
+	return UserType >= 4
 }
 
 func DeleteVerifyCode(UserType int) bool {
