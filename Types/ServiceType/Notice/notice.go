@@ -1,7 +1,8 @@
 package Notice
 
 type Notice struct {
-	NoticeID   uint
-	NoticeInfo string
-	IssuerID   int
+	NoticeID uint
+	Title    string
+	Content  string
+	IssuerID uint
 }
