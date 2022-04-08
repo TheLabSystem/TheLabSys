@@ -4,6 +4,6 @@ type ReservationRecord struct {
 	ID            uint
 	ReservationID uint
 	OperatorID    uint
-	OperationType string
+	OperationType int
 	OperatingDay  string
 }
