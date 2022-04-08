@@ -19,7 +19,7 @@ func connectDatabase() {
 	if DBErr == nil {
 		DBErr = db.AutoMigrate(&ReservationDao{})
 	} else {
-		fmt.Println("Error happened when initializing ResservationDao and creating Table in function NoticeDao.connectDatabase()")
+		fmt.Println("Error happened when initializing ReservationDao and creating Table in function NoticeDao.connectDatabase()")
 		fmt.Println(DBErr)
 	}
 }
