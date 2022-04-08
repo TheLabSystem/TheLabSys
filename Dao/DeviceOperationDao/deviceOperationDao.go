@@ -41,7 +41,7 @@ func convertDeviceOperationToDao(operation DeviceOperation.DeviceOperation) Devi
 		OperatorID: operation.OperatorID,
 	}
 }
-func InsertDeviceOperation(operation DeviceOperation.DeviceOperation) error {
+func InsertDeviceOperation(operation DeviceOperation.DeviceOperation) (DeviceOperation.DeviceOperation, error) {
 	dao := convertDeviceOperationToDao(operation)
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
@@ -54,5 +54,6 @@ func InsertDeviceOperation(operation DeviceOperation.DeviceOperation) error {
 	if err != nil {
 		fmt.Println("Error happened when inserting deviceOperation in function DeviceOperationDao.InsertDeviceOperation()")
 	}
-	return err
+	operation = convertDaoToDeviceOperation(dao)
+	return operation, err
 }

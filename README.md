@@ -22,3 +22,20 @@ MoneyNotEnough     ErrNo = 10 // 付款
 
 UnknownError ErrNo = 255 // 未知错误
 ```
+
+
+# For Device
+
+```txt
+Status = 2//设备可用
+Status = 1//设备不可用
+Status = -1//设备已损坏
+```
+
+# For Bill
+
+```txt
+Status = 2//账单未支付
+Status = 1//账单已支付
+Status = -1//账单已取消
+```

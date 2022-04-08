@@ -15,3 +15,7 @@ func DeleteVerifyCode(UserType int) bool {
 func GetReportForm(UserType int) bool {
 	return UserType >= 5
 }
+
+func AddDevice(UserType int) bool {
+	return UserType == 255
+}
