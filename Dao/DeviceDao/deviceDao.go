@@ -61,6 +61,7 @@ func InsertDevice(device Device.Device) error {
 }
 func UpdateDevice(device Device.Device) error {
 	var deviceDao = convertDeviceToDao(device)
+	deviceDao.ID = device.DeviceID
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
 			if err := tx.Model(&deviceDao).Updates(deviceDao).Error; err != nil {
