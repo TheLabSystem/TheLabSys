@@ -81,6 +81,9 @@ func FindUserInfoByID(userID uint) (string, error) {
 		}
 		return nil
 	})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "", nil
+	}
 	if err != nil {
 		fmt.Println("Error happened when finding userinfo in function UserInfoDao.FindUserByID()")
 		fmt.Println(err)

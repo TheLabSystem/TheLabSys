@@ -30,12 +30,7 @@ func connectDatabase() {
 	}
 }
 func init() {
-	// if table does not exist, then create table
 	connectDatabase()
-	//for DBErr != nil {
-	//	time.Sleep(30000)
-	//	connectDatabase()
-	//}
 }
 func (UserDao) TableName() string {
 	return "users"
@@ -106,7 +101,22 @@ func UpdateUser(user User.User) error {
 	}
 	return err
 }
+func UpdateMoney(user User.User, money float64) error {
+	var userDao = convertUserToDao(user)
+	userDao.ID = user.UserID
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(&userDao).Update("money", money).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		fmt.Println("Error happened when updating money in function UserDao.UpdateMoney()")
+	}
+	return err
 
+}
 func FindUserByID(id uint) (User.User, error) {
 	var userDao UserDao
 	var user User.User

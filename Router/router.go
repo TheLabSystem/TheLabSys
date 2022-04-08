@@ -2,6 +2,8 @@ package Router
 
 import (
 	"TheLabSystem/Controller/AuthController"
+	"TheLabSystem/Controller/BillController"
+	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/NoticeController"
 	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
@@ -19,6 +21,7 @@ func RegisterRouter(r *gin.Engine) {
 	// user
 	g.POST("/user/changeUserInfo", UserServiceController.UserServiceController{}.ChangeUserInfo)
 	g.POST("/user/register", UserServiceController.UserServiceController{}.RegisterUser)
+	g.POST("/user/addMoney", UserServiceController.UserServiceController{}.AddMoney)
 
 	// verify code
 	g.POST("/verifyCode/addVerifyCode", VerifyCodeController.VerifyCodeController{}.AddVerifyCodeController)
@@ -30,4 +33,13 @@ func RegisterRouter(r *gin.Engine) {
 	g.GET("/notice/getNotice", NoticeController.NoticeController{}.GetNoticeList)
 	g.POST("/notice/deleteNotice", NoticeController.NoticeController{}.DeleteNotice)
 	g.POST("/notice/updateNotice", NoticeController.NoticeController{}.UpdateNotice)
+
+	// bill
+	g.GET("/bill/getBill", BillController.BillController{}.GetBill)
+	g.POST("/bill/payBill", BillController.BillController{}.PayBill)
+
+	// mentorList service
+	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
+	g.POST("/mentalList/deleteStudent", MentalListController.MentalListController{}.DeleteStudentController)
+	g.GET("/mentalList/viewStudent", MentalListController.MentalListController{}.ViewStudentController)
 }

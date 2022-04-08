@@ -11,6 +11,8 @@ const (
 	LoginRequired      ErrNo = 6 // 用户未登录
 	PermDenied         ErrNo = 7 // 没有操作权限
 	VerifyCodeNotValid ErrNo = 8
+	StudentNotExist    ErrNo = 9
+	MoneyNotEnough     ErrNo = 10
 
 	UnknownError ErrNo = 255 // 未知错误
 )
