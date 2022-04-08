@@ -49,3 +49,18 @@ func (noticeService NoticeService) GetNoticeListByIssuer(issuerId int) (ErrNo.Er
 	}
 	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK), noticeList, total
 }
+
+func (noticeService NoticeService) DeleteNotice(username string, noticeId int) (ErrNo.ErrNo, string) {
+	user, userErr := UserDao.FindUserByUsername(username)
+	notice, noticeErr := NoticeDao.FindNoticeByID(uint(noticeId))
+	if userErr != nil || noticeErr != nil {
+		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError)
+	}
+	if user.UserID != notice.IssuerID {
+		return ErrNo.PermDenied, ErrorInformation.GenerateErrorInformation(ErrNo.PermDenied)
+	}
+	if NoticeDao.DeleteNotice(notice) != nil {
+		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError)
+	}
+	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK)
+}
