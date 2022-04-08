@@ -22,5 +22,11 @@ func (service ReservationService) SubmitReservation(username string, request Sub
 	if err != nil {
 		return ErrNo.ParamInvalid
 	}
-
+	if reservation_day.Before(time.Now()) {
+		return ErrNo.ParamInvalid
+	}
+	if request.Time >= 12 || request.Time < 0 {
+		return ErrNo.ParamInvalid
+	}
+	return ErrNo.OK
 }
