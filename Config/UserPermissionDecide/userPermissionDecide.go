@@ -11,3 +11,7 @@ func ViewVerifyCode(UserType int) bool {
 func DeleteVerifyCode(UserType int) bool {
 	return UserType >= 4
 }
+
+func GetReportForm(UserType int) bool {
+	return UserType >= 5
+}
