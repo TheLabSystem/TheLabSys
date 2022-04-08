@@ -47,3 +47,18 @@ func convertDaoToInfo(dao ReservationInfoDao) ReservationInfo.ReservationInfo {
 		ReservationTime: dao.ReservationTime,
 	}
 }
+func InsertReservationInfo(info ReservationInfo.ReservationInfo) error {
+	var dao = convertInfoToDao(info)
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Create(&dao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if err != nil {
+		fmt.Println("Error happened when inserting reservationInfo in function ReservationInfoDao.InsertReservationInfo()")
+	}
+	return err
+}
