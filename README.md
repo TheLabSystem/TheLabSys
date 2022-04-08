@@ -50,3 +50,9 @@ UserType = 5 // 外部接口（财务处）
 
 UserType = 255 // 负责人
 ```
+
+# For Reservation.OperationType
+```txt
+1 // 新加入Reservation
+2 // 
+```
