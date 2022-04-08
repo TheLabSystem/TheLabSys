@@ -11,7 +11,7 @@ func testInsertReservationRecord(wt *sync.WaitGroup) {
 	var rr = ReservationRecord.ReservationRecord{
 		ReservationID: 1,
 		OperatorID:    233,
-		OperationType: "permit",
+		OperationType: 1,
 		OperatingDay:  "2022-4-6",
 	}
 	err := ReservationRecordDao.InsertReservationRecord(rr)

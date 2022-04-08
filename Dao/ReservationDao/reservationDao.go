@@ -42,8 +42,9 @@ func convertDaoToReservation(reservationDao ReservationDao) Reservation.Reservat
 		Status:        reservationDao.Status,
 	}
 }
-func InsertReservation(reservation Reservation.Reservation) error {
+func InsertReservation(reservation Reservation.Reservation) (Reservation.Reservation, error) {
 	var reservationDao = convertReservationToDao(reservation)
+	var res Reservation.Reservation
 	err := db.Transaction(func(tx *gorm.DB) error {
 		if DBErr == nil {
 			DBErr = tx.Create(&reservationDao).Error
@@ -53,8 +54,10 @@ func InsertReservation(reservation Reservation.Reservation) error {
 	if err != nil {
 		fmt.Println("Error happened when inserting reservation in function ReservationDao.InsertReservation()")
 		fmt.Println(err)
+		return res, err
 	}
-	return err
+	res = convertDaoToReservation(reservationDao)
+	return res, err
 }
 
 func UpdateReservation(reservationID uint, status int) error {

@@ -66,7 +66,7 @@ func InsertReservationRecord(rr ReservationRecord.ReservationRecord) error {
 			return nil
 		})
 	if err != nil {
-		fmt.Println("Error happened when inserting reservationRecord in function ReservationRecordDao.InsertReservationRecord()")
+		fmt.Println("Error happened when inserting ReservationRecord in function ReservationRecordDao.InsertReservationRecord()")
 	}
 	return err
 }
@@ -83,7 +83,7 @@ func FindReservationRecordByReservationID(id uint) (ReservationRecord.Reservatio
 			return nil
 		})
 	if err != nil {
-		fmt.Println("Error happened when finding reservationRecords in function ReservationRecordDao.FindReservationRecordByReservationID()")
+		fmt.Println("Error happened when finding ReservationRecords in function ReservationRecordDao.FindReservationRecordByReservationID()")
 	} else {
 		rr = convertDaoToReservationRecord(rrDao)
 	}
@@ -101,7 +101,7 @@ func FindReservationRecordByOperatorID(id uint) (ReservationRecord.ReservationRe
 			return nil
 		})
 	if err != nil {
-		fmt.Println("Error happened when finding reservationRecords in function ReservationRecordDao.FindReservationRecordByOperatorID()")
+		fmt.Println("Error happened when finding ReservationRecords in function ReservationRecordDao.FindReservationRecordByOperatorID()")
 	} else {
 		rr = convertDaoToReservationRecord(rrDao)
 	}
@@ -119,7 +119,7 @@ func FindReservationRecordByOperatingDay(day string) (ReservationRecord.Reservat
 			return nil
 		})
 	if err != nil {
-		fmt.Println("Error happened when finding reservationRecords in function ReservationRecordDao.FindReservationRecordByOperatingDay()")
+		fmt.Println("Error happened when finding ReservationRecords in function ReservationRecordDao.FindReservationRecordByOperatingDay()")
 	} else {
 		rr = convertDaoToReservationRecord(rrDao)
 	}
