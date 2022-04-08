@@ -39,3 +39,14 @@ Status = 2//账单未支付
 Status = 1//账单已支付
 Status = -1//账单已取消
 ```
+# For UserType
+
+```txt
+UserType = 1 // 外来人员
+UserType = 2 // 学生
+UserType = 3 // 老师
+UserType = 4 // 设备管理员
+UserType = 5 // 外部接口（财务处）
+
+UserType = 255 // 负责人
+```
