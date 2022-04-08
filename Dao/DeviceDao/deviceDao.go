@@ -75,3 +75,25 @@ func UpdateDevice(device Device.Device) error {
 	}
 	return err
 }
+
+func FindDeviceByType(deviceType uint) ([]Device.Device, error) {
+	var daos []DeviceDao
+	var devices []Device.Device
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Where(&DeviceDao{DeviceTypeID: deviceType, DeviceStatus: 2}).Find(&daos).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if err != nil {
+		fmt.Println("Error happened when finding devices in function DeviceDao.FindDeviceByType()")
+		fmt.Println(err)
+	}
+	devices = make([]Device.Device, len(daos), len(daos))
+	for key := range daos {
+		devices[key] = convertDaoToDevice(daos[key])
+	}
+	return devices, err
+}
