@@ -30,5 +30,8 @@ func GenerateErrorInformation(code ErrNo.ErrNo) string {
 	if code == ErrNo.MoneyNotEnough {
 		return "Your account doesn't have enough money to pay this bill!"
 	}
+	if code == ErrNo.ParamInvalid {
+		return "The parameters are invalid!"
+	}
 	return "Success!"
 }
