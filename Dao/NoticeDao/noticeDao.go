@@ -113,12 +113,12 @@ func FindNoticeByID(id uint) (Notice.Notice, error) {
 	}
 	return notice, err
 }
-func FindNoticeByIssuerID(issuerid uint) (Notice.Notice, error) {
-	var noticeDao NoticeDao
-	var notice Notice.Notice
+func FindNoticeByIssuerID(issuerid uint) ([]Notice.Notice, int, error) {
+	var noticeDaos []NoticeDao
+	var notices []Notice.Notice
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("issuer_id=?", issuerid).First(&noticeDao).Error; err != nil {
+			if err := tx.Where("issuer_id=?", issuerid).Find(&noticeDaos).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -127,16 +127,19 @@ func FindNoticeByIssuerID(issuerid uint) (Notice.Notice, error) {
 	if err != nil {
 		fmt.Println("Error happened when finding notices in function NoticeDao.FindNoticeByIssuerID()")
 	} else {
-		notice = convertDaoToNotice(noticeDao)
+		for key := range noticeDaos {
+			notices[key] = convertDaoToNotice(noticeDaos[key])
+		}
 	}
-	return notice, err
+	return notices, len(notices), err
 }
-func FindNoticeByOffset(offset int, limit int) ([]Notice.Notice, error) {
-	var daos = make([]NoticeDao, limit, limit)
-	var notices = make([]Notice.Notice, limit, limit)
+func FindNoticeByOffset(offset int, limit int) ([]Notice.Notice, int, error) {
+	var count int64
+	var daos = make([]NoticeDao, limit)
+	var notices = make([]Notice.Notice, limit)
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Limit(limit).Offset(offset).Order("id").Find(&daos).Error; err != nil {
+			if err := tx.Limit(limit).Offset(offset).Order("id").Find(&daos).Count(&count).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -144,10 +147,10 @@ func FindNoticeByOffset(offset int, limit int) ([]Notice.Notice, error) {
 		})
 	if err != nil {
 		fmt.Println("Error happened when finding users in function NoticeDao.FindAllNotice()")
-		return notices, err
+		return notices, int(count), err
 	}
 	for key := range daos {
 		notices[key] = convertDaoToNotice(daos[key])
 	}
-	return notices, nil
+	return notices, int(count), nil
 }

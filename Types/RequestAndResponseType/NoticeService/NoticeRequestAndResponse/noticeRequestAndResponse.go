@@ -1,6 +1,9 @@
 package NoticeRequestAndResponse
 
-import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
+import (
+	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/ServiceType/Notice"
+)
 
 type AddNoticeRequest struct {
 	Title   string `json:"title"`
@@ -14,13 +17,12 @@ type AddNoticeResponse struct {
 	}
 }
 
-type GgetNoticeRequest struct {
-}
-
 type GetNoticeResponse struct {
 	Code ErrNo.ErrNo
 	Data struct {
 		Message string `json:"message"`
+		Notice  []Notice.Notice
+		Total   int
 	}
 }
 
