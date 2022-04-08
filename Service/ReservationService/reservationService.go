@@ -3,12 +3,14 @@ package ReservationService
 import (
 	"TheLabSystem/Dao/DeviceDao"
 	"TheLabSystem/Dao/ReservationDao"
+	"TheLabSystem/Dao/ReservationInfoDao"
 	"TheLabSystem/Dao/ReservationRecordDao"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
 	"TheLabSystem/Types/ServiceType/Reservation"
+	"TheLabSystem/Types/ServiceType/ReservationInfo"
 	"TheLabSystem/Types/ServiceType/ReservationRecord"
 	"time"
 )
@@ -16,7 +18,7 @@ import (
 type ReservationService struct {
 }
 
-func (service ReservationService) SubmitReservation(username string, request SubmitReservationRequestAndResponse.SubmitReservationRequest) ErrNo.ErrNo {
+func (service ReservationService) SubmitReservation(username string, request *SubmitReservationRequestAndResponse.SubmitReservationRequest) ErrNo.ErrNo {
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
 		return ErrNo.UnknownError
@@ -53,18 +55,29 @@ func (service ReservationService) SubmitReservation(username string, request Sub
 	} else if user.UserType == 3 {
 		reservation.Status = 32
 	}
-	reservation,err=ReservationDao.InsertReservation(reservation);if err!=nil{
+	reservation, err = ReservationDao.InsertReservation(reservation)
+	if err != nil {
 		return ErrNo.UnknownError
 	}
 	var record = ReservationRecord.ReservationRecord{
 		ReservationID: reservation.ReservationID,
-		OperatorID: user.UserID,
-		OperationType:1,
-		OperatingDay: reservation.OperatingDay,
+		OperatorID:    user.UserID,
+		OperationType: 1,
+		OperatingDay:  reservation.OperatingDay,
 	}
-	if ReservationRecordDao.InsertReservationRecord(record)!=nil{
+	if ReservationRecordDao.InsertReservationRecord(record) != nil {
 		return ErrNo.UnknownError
 	}
-	if
+	for i := 0; i < request.Num; i++ {
+		info := ReservationInfo.ReservationInfo{
+			ReservationID:   reservation.ReservationID,
+			DeviceID:        devices[i].DeviceID,
+			ReservationDay:  request.Day,
+			ReservationTime: request.Time,
+		}
+		if ReservationInfoDao.InsertReservationInfo(info) != nil {
+			return ErrNo.UnknownError
+		}
+	}
 	return ErrNo.OK
 }
