@@ -1,0 +1,134 @@
+package DeviceService
+
+import (
+	"TheLabSystem/Config/UserPermissionDecide"
+	"TheLabSystem/Dao/DeviceDao"
+	"TheLabSystem/Dao/DeviceOperationDao"
+	"TheLabSystem/Dao/DeviceRecordDao"
+	"TheLabSystem/Dao/DeviceTypeInfoDao"
+	"TheLabSystem/Dao/UserDao"
+	"TheLabSystem/Types/RequestAndResponseType/Device/GetDeviceTypeRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/ServiceType/Device"
+	"TheLabSystem/Types/ServiceType/DeviceOperation"
+	"TheLabSystem/Types/ServiceType/DeviceRecord"
+	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
+	"errors"
+	"gorm.io/gorm"
+)
+
+//UpdateDevice(); Done
+//DeleteDevice();
+//GetDeviceType(); Done
+//AddDevice(); Done
+
+type DeviceService struct {
+}
+
+func (service DeviceService) AddDevice(username string, deviceID uint, deviceTypeID uint, deviceInfo string) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
+	if !UserPermissionDecide.AddDevice(user.UserType) {
+		return ErrNo.PermDenied
+	}
+	if err := DeviceDao.InsertDevice(Device.Device{
+		DeviceID:     deviceID,
+		DeviceTypeID: deviceTypeID,
+		DeviceStatus: 2,
+	}); err != nil {
+		return ErrNo.UnknownError
+	}
+	operation, err := DeviceOperationDao.InsertDeviceOperation(DeviceOperation.DeviceOperation{
+		OperatorID: user.UserID,
+	})
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if err := DeviceRecordDao.InsertDeviceRecord(DeviceRecord.DeviceRecord{
+		DeviceOperationID: operation.ID,
+		DeviceID:          deviceID,
+		OperationType:     1,
+	}); err != nil {
+		return ErrNo.UnknownError
+	}
+	if _, err := DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(deviceTypeID); errors.Is(err, gorm.ErrRecordNotFound) {
+		//fmt.Println("已执行")
+		err := DeviceTypeInfoDao.InsertDeviceTypeInfo(DeviceTypeInfo.DeviceTypeInfo{
+			DeviceTypeID: deviceTypeID,
+			DeviceInfo:   deviceInfo,
+		})
+		if err != nil {
+			return ErrNo.UnknownError
+		}
+	}
+	return ErrNo.OK
+}
+
+func (service DeviceService) GetDeviceType(username string) (ErrNo.ErrNo, []GetDeviceTypeRequestAndResponse.ResponseInfo) {
+	var responseInfo []GetDeviceTypeRequestAndResponse.ResponseInfo
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError, responseInfo
+	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired, responseInfo
+	}
+	if !UserPermissionDecide.AddDevice(user.UserType) {
+		return ErrNo.PermDenied, responseInfo
+	}
+	if deviceTypeInfo, err := DeviceTypeInfoDao.FindAllDeviceTypeInfo(); err != nil {
+		return ErrNo.UnknownError, responseInfo
+	} else {
+		responseInfo = make([]GetDeviceTypeRequestAndResponse.ResponseInfo, len(deviceTypeInfo), len(deviceTypeInfo))
+		for key := range deviceTypeInfo {
+			responseInfo[key].DeviceTypeID = deviceTypeInfo[key].DeviceTypeID
+			responseInfo[key].DeviceInfo = deviceTypeInfo[key].DeviceInfo
+		}
+	}
+	return ErrNo.OK, responseInfo
+}
+
+func (service DeviceService) UpdateDevice(username string, deviceID uint, deviceTypeID uint, deviceStatus int) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
+	if !UserPermissionDecide.AddDevice(user.UserType) {
+		return ErrNo.PermDenied
+	}
+	if err := DeviceDao.UpdateDevice(Device.Device{
+		DeviceID:     deviceID,
+		DeviceTypeID: deviceTypeID,
+		DeviceStatus: deviceStatus,
+	}); err != nil {
+		return ErrNo.UnknownError
+	}
+	return ErrNo.OK
+}
+func (service DeviceService) DeleteDevice(username string, deviceID uint) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
+	if !UserPermissionDecide.AddDevice(user.UserType) {
+		return ErrNo.PermDenied
+	}
+	if err := DeviceDao.UpdateDevice(Device.Device{
+		DeviceID:     deviceID,
+		DeviceStatus: -1,
+	}); err != nil {
+		return ErrNo.UnknownError
+	}
+	return ErrNo.OK
+}
