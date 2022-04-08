@@ -3,6 +3,7 @@ package MentorRecordDao
 import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Types/ServiceType/MentorRecord"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -74,39 +75,51 @@ func DeleteMentorRecord(mr MentorRecord.MentorRecord) error {
 	}
 	return err
 }
-func FindMentorRecordByStudentID(id uint) (MentorRecord.MentorRecord, error) {
-	var mrDao MentorRecordDao
-	var mr MentorRecord.MentorRecord
+func FindMentorRecordByStudentID(id uint) ([]MentorRecord.MentorRecord, error) {
+	var mrDao []MentorRecordDao
+	var mr []MentorRecord.MentorRecord
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("student_id=?", id).First(&mrDao).Error; err != nil {
+			if err := tx.Where("student_id=?", id).Find(&mrDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
 			return nil
 		})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return mr, nil
+	}
 	if err != nil {
 		fmt.Println("Error happened when finding mentorRecords in function MentorRecordDao.FindMentorRecordByStudentID()")
 	} else {
-		mr = convertDaoToMentorRecord(mrDao)
+		mr = make([]MentorRecord.MentorRecord, len(mrDao), len(mrDao))
+		for key := range mrDao {
+			mr[key] = convertDaoToMentorRecord(mrDao[key])
+		}
 	}
 	return mr, err
 }
-func FindMentorRecordByTeacherID(id uint) (MentorRecord.MentorRecord, error) {
-	var mrDao MentorRecordDao
-	var mr MentorRecord.MentorRecord
+func FindMentorRecordByTeacherID(id uint) ([]MentorRecord.MentorRecord, error) {
+	var mrDao []MentorRecordDao
+	var mr []MentorRecord.MentorRecord
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("teacher_id=?", id).First(&mrDao).Error; err != nil {
+			if err := tx.Where("teacher_id=?", id).Find(&mrDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
 			return nil
 		})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return mr, nil
+	}
 	if err != nil {
 		fmt.Println("Error happened when finding mentorRecords in function MentorRecordDao.FindMentorRecordByTeacherID()")
 	} else {
-		mr = convertDaoToMentorRecord(mrDao)
+		mr = make([]MentorRecord.MentorRecord, len(mrDao), len(mrDao))
+		for key := range mrDao {
+			mr[key] = convertDaoToMentorRecord(mrDao[key])
+		}
 	}
 	return mr, err
 }

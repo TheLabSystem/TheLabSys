@@ -11,9 +11,14 @@ type ReservationRecordDao struct {
 	gorm.Model
 	ReservationID uint   `gorm:"type:uint"`
 	OperatorID    uint   `gorm:"type:uint"`
-	OperationType string `gorm:"type:string"`
+	OperationType int    `gorm:"type:integer"`
 	OperatingDay  string `gorm:"type:string"`
 }
+
+// 申请:operationType=1
+// 拒绝：operationType=2
+// 同意：operationType=3 老师-》学生 5，
+// 取消：operationType=4
 
 var db *gorm.DB
 var DBErr error

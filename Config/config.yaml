@@ -5,3 +5,12 @@ database:
   name: LabSysDB
   username: root
   password: 123456
+import:
+  gorm:
+    location: gorm.io/gorm
+    mysql:
+      location: gorm.io/driver/mysql
+  yaml:
+    location: gokpg.in/yaml.v2
+  gin:
+    location: github.com/gin-gonic/gin
