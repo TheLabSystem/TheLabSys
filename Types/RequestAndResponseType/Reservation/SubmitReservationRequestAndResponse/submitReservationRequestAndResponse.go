@@ -1,4 +1,4 @@
-package SubmitReservationAndResponse
+package SubmitReservationRequestAndResponse
 
 import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
 
