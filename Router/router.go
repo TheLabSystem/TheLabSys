@@ -29,4 +29,5 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/notice/addNotice", NoticeController.NoticeController{}.AddNotice)
 	g.GET("/notice/getNotice", NoticeController.NoticeController{}.GetNoticeList)
 	g.POST("/notice/deleteNotice", NoticeController.NoticeController{}.DeleteNotice)
+	g.POST("/notice/updateNotice", NoticeController.NoticeController{}.UpdateNotice)
 }

@@ -68,3 +68,21 @@ func (controller NoticeController) DeleteNotice(c *gin.Context) {
 	response.Code, response.Data.Message = NoticeService.NoticeService{}.DeleteNotice(cookie, request.ID)
 	c.JSON(http.StatusOK, response)
 }
+
+func (controller NoticeController) UpdateNotice(c *gin.Context) {
+	response := &NoticeRequestAndResponse.UpdateNoticeResponse{}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	request := &NoticeRequestAndResponse.UpdateNoticeRequest{}
+	if err = c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	response.Code, response.Data.Message = NoticeService.NoticeService{}.UpdateNotice(cookie, request.ID, request.Title, request.Content)
+	c.JSON(http.StatusOK, response)
+}

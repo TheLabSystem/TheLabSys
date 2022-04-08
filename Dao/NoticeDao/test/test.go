@@ -84,7 +84,7 @@ func main() {
 	//testDeleteNotice()
 	//testFindNotice()
 	//testUpdateNotice()
-	notices, err := NoticeDao.FindNoticeByOffset(1, 100)
+	notices, total, err := NoticeDao.FindNoticeByOffset(1, 100)
 	if err != nil {
 		fmt.Println(err)
 	} else {
@@ -92,4 +92,5 @@ func main() {
 			fmt.Println(notices[key])
 		}
 	}
+	fmt.Println(total)
 }

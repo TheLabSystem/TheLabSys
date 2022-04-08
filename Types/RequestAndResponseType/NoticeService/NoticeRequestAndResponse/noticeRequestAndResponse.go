@@ -36,3 +36,16 @@ type DeleteNoticeResponse struct {
 		Message string `json:"message"`
 	}
 }
+
+type UpdateNoticeRequest struct {
+	ID      int    `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type UpdateNoticeResponse struct {
+	Code ErrNo.ErrNo
+	Data struct {
+		Message string `json:"message"`
+	}
+}

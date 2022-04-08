@@ -64,3 +64,24 @@ func (noticeService NoticeService) DeleteNotice(username string, noticeId int) (
 	}
 	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK)
 }
+
+func (noticeService NoticeService) UpdateNotice(username string, noticeId int, title string, content string) (ErrNo.ErrNo, string) {
+	user, userErr := UserDao.FindUserByUsername(username)
+	notice, noticeErr := NoticeDao.FindNoticeByID(uint(noticeId))
+	if userErr != nil || noticeErr != nil {
+		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError)
+	}
+	if user.UserID != notice.IssuerID {
+		return ErrNo.PermDenied, ErrorInformation.GenerateErrorInformation(ErrNo.PermDenied)
+	}
+	if title != "" {
+		notice.Title = title
+	}
+	if content != "" {
+		notice.Content = content
+	}
+	if NoticeDao.UpdateNotice(notice) != nil {
+		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError)
+	}
+	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK)
+}
