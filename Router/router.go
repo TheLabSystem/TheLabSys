@@ -3,6 +3,7 @@ package Router
 import (
 	"TheLabSystem/Controller/AuthController"
 	"TheLabSystem/Controller/BillController"
+	"TheLabSystem/Controller/DeviceController"
 	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/NoticeController"
 	"TheLabSystem/Controller/UserServiceController"
@@ -42,4 +43,10 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
 	g.POST("/mentalList/deleteStudent", MentalListController.MentalListController{}.DeleteStudentController)
 	g.GET("/mentalList/viewStudent", MentalListController.MentalListController{}.ViewStudentController)
+
+	// device
+	g.POST("/device/addDevice", DeviceController.DeviceController{}.AddDevice)
+	g.GET("/device/getDeviceType", DeviceController.DeviceController{}.GetDeviceType)
+	g.POST("/device/updateDevice", DeviceController.DeviceController{}.UpdateDevice)
+	g.POST("/device/deleteDevice", DeviceController.DeviceController{}.DeleteDevice)
 }
