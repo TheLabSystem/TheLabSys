@@ -6,9 +6,9 @@ import (
 	"TheLabSystem/Controller/DeviceController"
 	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/NoticeController"
+	"TheLabSystem/Controller/ReservationController"
 	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,4 +49,7 @@ func RegisterRouter(r *gin.Engine) {
 	g.GET("/device/getDeviceType", DeviceController.DeviceController{}.GetDeviceType)
 	g.POST("/device/updateDevice", DeviceController.DeviceController{}.UpdateDevice)
 	g.POST("/device/deleteDevice", DeviceController.DeviceController{}.DeleteDevice)
+
+	// reservation
+	g.POST("/reservation/submitReservation", ReservationController.ReservationController{}.SubmitReservation)
 }
