@@ -11,6 +11,6 @@ import:
     mysql:
       location: gorm.io/driver/mysql
   yaml:
-    location: gokpg.in/yaml.v2
+    location: gopkg.in/yaml.v2
   gin:
     location: github.com/gin-gonic/gin
