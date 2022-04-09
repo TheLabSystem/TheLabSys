@@ -52,4 +52,5 @@ func RegisterRouter(r *gin.Engine) {
 
 	// reservation
 	g.POST("/reservation/submitReservation", ReservationController.ReservationController{}.SubmitReservation)
+	g.POST("/reservation/revertReservation", ReservationController.ReservationController{}.RevertReservation)
 }

@@ -81,3 +81,16 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	}
 	return ErrNo.OK
 }
+
+func (service ReservationService) RevertReservation(username string, reservationID uint) ErrNo.ErrNo {
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	} else if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
+	if ReservationDao.UpdateReservation(reservationID, -1) != nil {
+		return ErrNo.UnknownError
+	}
+	return ErrNo.OK
+}
