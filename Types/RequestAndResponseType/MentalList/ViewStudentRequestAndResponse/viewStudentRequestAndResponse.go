@@ -2,7 +2,7 @@ package ViewStudentRequestAndResponse
 
 import (
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
-	"TheLabSystem/Types/ServiceType/MentorRecord"
+	"TheLabSystem/Types/ServiceType/User"
 )
 
 type ViewStudentRequest struct {
@@ -10,7 +10,7 @@ type ViewStudentRequest struct {
 type ViewStudentResponse struct {
 	Code ErrNo.ErrNo `json:"Code"`
 	Data struct {
-		MentorRecords []MentorRecord.MentorRecord `json:"mentorRecords"`
-		Message       string                      `json:"message"`
+		Users   []User.User `json:"users"`
+		Message string      `json:"message"`
 	}
 }
