@@ -4,6 +4,7 @@ import (
 	"TheLabSystem/Config/ErrorInformation"
 	"TheLabSystem/Service/ReservationService"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/RevertReservationRequestAndRespoonse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"github.com/gin-gonic/gin"
@@ -48,6 +49,25 @@ func (controller ReservationController) RevertReservation(c *gin.Context) {
 		return
 	}
 	response.Code = ReservationService.ReservationService{}.RevertReservation(cookie, request.ReservationID)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+	return
+}
+func (controller ReservationController) GetApproval(c *gin.Context) {
+	var request = &GetApprovalRequestAndResponse.GetApprovalRequest{}
+	var response = &GetApprovalRequestAndResponse.GetApprovalResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Data.Approval, response.Code = ReservationService.ReservationService{}.GetApproval(cookie, request)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 	return
