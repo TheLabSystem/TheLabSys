@@ -1,0 +1,220 @@
+Index: Service/ReservationService/reservationService.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ReservationService\n\nimport (\n\t\"TheLabSystem/Dao/DeviceDao\"\n\t\"TheLabSystem/Dao/ReservationRecordDao\"\n\t\"TheLabSystem/Dao/UserDao\"\n\t\"TheLabSystem/Types/RequestAndResponseType/ErrNo\"\n\tSubmitReservationAndResponse \"TheLabSystem/Types/RequestAndResponseType/Reservation\"\n\t\"TheLabSystem/Types/ServiceType/Device\"\n\t\"TheLabSystem/Types/ServiceType/Reservation\"\n\t\"TheLabSystem/Types/ServiceType/ReservationRecord\"\n\t\"time\"\n)\n\ntype ReservationService struct {\n}\n\nfunc (service ReservationService) SubmitReservation(username string, request SubmitReservationAndResponse.SubmitReservationRequest) ErrNo.ErrNo {\n\tuser, err := UserDao.FindUserByUsername(username)\n\tif err != nil {\n\t\treturn ErrNo.UnknownError\n\t} else if user.Username == \"\" {\n\t\treturn ErrNo.LoginRequired\n\t}\n\tvar reservationDay time.Time\n\treservationDay, err = time.Parse(\"2006-01-02\", request.Day)\n\tif err != nil {\n\t\treturn ErrNo.ParamInvalid\n\t}\n\tif reservationDay.Before(time.Now()) {\n\t\treturn ErrNo.ParamInvalid\n\t}\n\tif request.Time >= 12 || request.Time < 0 {\n\t\treturn ErrNo.ParamInvalid\n\t}\n\tif request.Num <= 0 {\n\t\treturn ErrNo.ParamInvalid\n\t}\n\t// check if there are still enough device\n\tvar devices []Device.Device\n\tdevices, err = DeviceDao.FindDeviceByType(request.DeviceType)\n\tif len(devices) <= request.Num {\n\t\treturn ErrNo.ParamInvalid\n\t}\n\treservation := Reservation.Reservation{\n\t\tApplicantID: user.UserID,\n\t}\n\n\tfor i := 0; i < request.Num; i++ {\n\t\tvar record ReservationRecord.ReservationRecord\n\t\trecord.ReservationID =\n\t\t\tReservationRecordDao.InsertReservationRecord()\n\t}\n\n\treturn ErrNo.OK\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Service/ReservationService/reservationService.go b/Service/ReservationService/reservationService.go
+--- a/Service/ReservationService/reservationService.go	
++++ b/Service/ReservationService/reservationService.go	
+@@ -2,10 +2,11 @@
+ 
+ import (
+ 	"TheLabSystem/Dao/DeviceDao"
++	"TheLabSystem/Dao/ReservationDao"
+ 	"TheLabSystem/Dao/ReservationRecordDao"
+ 	"TheLabSystem/Dao/UserDao"
+ 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+-	SubmitReservationAndResponse "TheLabSystem/Types/RequestAndResponseType/Reservation"
++	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
+ 	"TheLabSystem/Types/ServiceType/Device"
+ 	"TheLabSystem/Types/ServiceType/Reservation"
+ 	"TheLabSystem/Types/ServiceType/ReservationRecord"
+@@ -15,7 +16,7 @@
+ type ReservationService struct {
+ }
+ 
+-func (service ReservationService) SubmitReservation(username string, request SubmitReservationAndResponse.SubmitReservationRequest) ErrNo.ErrNo {
++func (service ReservationService) SubmitReservation(username string, request SubmitReservationRequestAndResponse.SubmitReservationRequest) ErrNo.ErrNo {
+ 	user, err := UserDao.FindUserByUsername(username)
+ 	if err != nil {
+ 		return ErrNo.UnknownError
+@@ -45,7 +46,7 @@
+ 	reservation := Reservation.Reservation{
+ 		ApplicantID: user.UserID,
+ 	}
+-
++	ReservationDao.InsertReservation(reservation)
+ 	for i := 0; i < request.Num; i++ {
+ 		var record ReservationRecord.ReservationRecord
+ 		record.ReservationID =
+Index: Dao/ReservationDao/reservationDao.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ReservationDao\n\nimport (\n\t\"TheLabSystem/Dao/DBAccessor\"\n\t\"TheLabSystem/Types/ServiceType/Reservation\"\n\t\"fmt\"\n\t\"gorm.io/gorm\"\n)\n\ntype ReservationDao struct {\n\tgorm.Model\n\tApplicantID uint `gorm:\"type:uint\"`\n\tStatus      int  `gorm:\"type:int\"`\n}\n\nvar db *gorm.DB\nvar DBErr error\n\nfunc connectDatabase() {\n\tdb, DBErr = DBAccessor.MysqlInit()\n\tif DBErr == nil {\n\t\tDBErr = db.AutoMigrate(&ReservationDao{})\n\t} else {\n\t\tfmt.Println(\"Error happened when initializing ReservationDao and creating Table in function NoticeDao.connectDatabase()\")\n\t\tfmt.Println(DBErr)\n\t}\n}\nfunc init() {\n\tconnectDatabase()\n}\nfunc convertReservationToDao(reservation Reservation.Reservation) ReservationDao {\n\treturn ReservationDao{\n\t\tApplicantID: reservation.ApplicantID,\n\t\tStatus:      reservation.Status,\n\t}\n}\nfunc convertDaoToReservation(reservationDao ReservationDao) Reservation.Reservation {\n\treturn Reservation.Reservation{\n\t\tReservationID: reservationDao.ID,\n\t\tApplicantID:   reservationDao.ApplicantID,\n\t\tOperatingDay:  reservationDao.CreatedAt.String(),\n\t\tStatus:        reservationDao.Status,\n\t}\n}\nfunc InsertReservation(reservation Reservation.Reservation) error {\n\tvar reservationDao = convertReservationToDao(reservation)\n\terr := db.Transaction(func(tx *gorm.DB) error {\n\t\tif DBErr == nil {\n\t\t\tDBErr = tx.Create(&reservationDao).Error\n\t\t}\n\t\treturn DBErr\n\t})\n\tif err != nil {\n\t\tfmt.Println(\"Error happened when inserting reservation in function ReservationDao.InsertReservation()\")\n\t\tfmt.Println(err)\n\t}\n\treturn err\n}\n\nfunc UpdateReservation(reservationID uint, status int) error {\n\tvar reservationDao ReservationDao\n\treservationDao.ID = reservationID\n\terr := db.Transaction(\n\t\tfunc(tx *gorm.DB) error {\n\t\t\tif err := tx.Model(&reservationDao).Update(\"status\", status).Error; err != nil {\n\t\t\t\ttx.Rollback()\n\t\t\t\treturn err\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\tif err != nil {\n\t\tfmt.Println(\"更新预约状态出错\")\n\t}\n\treturn err\n}\n\nfunc FindReservationByID(id uint) (Reservation.Reservation, error) {\n\tvar reservationDao ReservationDao\n\tvar reservation Reservation.Reservation\n\terr := db.Transaction(\n\t\tfunc(tx *gorm.DB) error {\n\t\t\tif err := tx.Where(\"id=?\", id).First(&reservationDao).Error; err != nil {\n\t\t\t\ttx.Rollback()\n\t\t\t\treturn err\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\tif err != nil {\n\t\tfmt.Println(\"查找预约出现错误\")\n\t} else {\n\t\treservation = convertDaoToReservation(reservationDao)\n\t}\n\treturn reservation, err\n}\n\nfunc FindAllReservation() ([]Reservation.Reservation, error) {\n\tvar reservationDao []ReservationDao\n\tvar reservation []Reservation.Reservation\n\terr := db.Transaction(\n\t\tfunc(tx *gorm.DB) error {\n\t\t\tif err := tx.Find(&reservationDao).Error; err != nil {\n\t\t\t\ttx.Rollback()\n\t\t\t\treturn err\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\tif err != nil {\n\t\tfmt.Println(\"查找预约出现错误\")\n\t} else {\n\t\treservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))\n\t\tfor key := range reservationDao {\n\t\t\treservation[key] = convertDaoToReservation(reservationDao[key])\n\t\t}\n\t}\n\treturn reservation, err\n}\nfunc FindApprovalReservation() ([]Reservation.Reservation, error) {\n\tvar reservationDao []ReservationDao\n\tvar reservation []Reservation.Reservation\n\terr := db.Transaction(\n\t\tfunc(tx *gorm.DB) error {\n\t\t\tif err := tx.Where(\"status=1 or status=2 or status=3\").Find(&reservationDao).Error; err != nil {\n\t\t\t\ttx.Rollback()\n\t\t\t\treturn err\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\tif err != nil {\n\t\tfmt.Println(\"查找预约出现错误\")\n\t} else {\n\t\treservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))\n\t\tfor key := range reservationDao {\n\t\t\treservation[key] = convertDaoToReservation(reservationDao[key])\n\t\t}\n\t}\n\treturn reservation, err\n}\nfunc FindDisapprovalReservation() ([]Reservation.Reservation, error) {\n\tvar reservationDao []ReservationDao\n\tvar reservation []Reservation.Reservation\n\terr := db.Transaction(\n\t\tfunc(tx *gorm.DB) error {\n\t\t\tif err := tx.Where(\"status!=1 and status!=2 and status!=3\").Find(&reservationDao).Error; err != nil {\n\t\t\t\ttx.Rollback()\n\t\t\t\treturn err\n\t\t\t}\n\t\t\treturn nil\n\t\t})\n\tif err != nil {\n\t\tfmt.Println(\"查找预约出现错误\")\n\t} else {\n\t\treservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))\n\t\tfor key := range reservationDao {\n\t\t\treservation[key] = convertDaoToReservation(reservationDao[key])\n\t\t}\n\t}\n\treturn reservation, err\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Dao/ReservationDao/reservationDao.go b/Dao/ReservationDao/reservationDao.go
+--- a/Dao/ReservationDao/reservationDao.go	
++++ b/Dao/ReservationDao/reservationDao.go	
+@@ -42,7 +42,7 @@
+ 		Status:        reservationDao.Status,
+ 	}
+ }
+-func InsertReservation(reservation Reservation.Reservation) error {
++func InsertReservation(reservation Reservation.Reservation) (Reservation.Reservation, error) {
+ 	var reservationDao = convertReservationToDao(reservation)
+ 	err := db.Transaction(func(tx *gorm.DB) error {
+ 		if DBErr == nil {
+@@ -54,6 +54,7 @@
+ 		fmt.Println("Error happened when inserting reservation in function ReservationDao.InsertReservation()")
+ 		fmt.Println(err)
+ 	}
++
+ 	return err
+ }
+ 
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/vcs.xml	
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/dataSources.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.xml b/.idea/dataSources.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/dataSources.xml	
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
++    <data-source source="LOCAL" name="@localhost" uuid="87314a3f-7e10-4144-891a-b1baa6560092">
++      <driver-ref>mysql.8</driver-ref>
++      <synchronize>true</synchronize>
++      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
++      <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
++      <working-dir>$ProjectFileDir$</working-dir>
++    </data-source>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/modules.xml	
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/TheLabSystem.iml" filepath="$PROJECT_DIR$/.idea/TheLabSystem.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/TheLabSystem.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/TheLabSystem.iml b/.idea/TheLabSystem.iml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/TheLabSystem.iml	
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="EMPTY_MODULE" version="4">
++  <component name="Go" enabled="true" />
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: go.mod
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>module TheLabSystem\n\ngo 1.17\n\nrequire (\n\tgithub.com/fsnotify/fsnotify v1.5.1 // indirect\n\tgithub.com/gin-contrib/sse v0.1.0 // indirect\n\tgithub.com/gin-gonic/gin v1.7.7 // indirect\n\tgithub.com/go-playground/locales v0.13.0 // indirect\n\tgithub.com/go-playground/universal-translator v0.17.0 // indirect\n\tgithub.com/go-playground/validator/v10 v10.4.1 // indirect\n\tgithub.com/go-sql-driver/mysql v1.6.0 // indirect\n\tgithub.com/golang/protobuf v1.5.2 // indirect\n\tgithub.com/hashicorp/hcl v1.0.0 // indirect\n\tgithub.com/jinzhu/inflection v1.0.0 // indirect\n\tgithub.com/jinzhu/now v1.1.4 // indirect\n\tgithub.com/json-iterator/go v1.1.12 // indirect\n\tgithub.com/leodido/go-urn v1.2.0 // indirect\n\tgithub.com/magiconair/properties v1.8.5 // indirect\n\tgithub.com/mattn/go-isatty v0.0.14 // indirect\n\tgithub.com/mitchellh/mapstructure v1.4.3 // indirect\n\tgithub.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect\n\tgithub.com/modern-go/reflect2 v1.0.2 // indirect\n\tgithub.com/pelletier/go-toml v1.9.4 // indirect\n\tgithub.com/spf13/afero v1.6.0 // indirect\n\tgithub.com/spf13/cast v1.4.1 // indirect\n\tgithub.com/spf13/jwalterweatherman v1.1.0 // indirect\n\tgithub.com/spf13/pflag v1.0.5 // indirect\n\tgithub.com/spf13/viper v1.10.1 // indirect\n\tgithub.com/subosito/gotenv v1.2.0 // indirect\n\tgithub.com/ugorji/go/codec v1.1.7 // indirect\n\tgolang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect\n\tgolang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect\n\tgolang.org/x/text v0.3.7 // indirect\n\tgoogle.golang.org/protobuf v1.27.1 // indirect\n\tgopkg.in/ini.v1 v1.66.2 // indirect\n\tgopkg.in/yaml.v2 v2.4.0 // indirect\n\tgorm.io/driver/mysql v1.3.3 // indirect\n\tgorm.io/gorm v1.23.4 // indirect\n)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/go.mod b/go.mod
+--- a/go.mod	
++++ b/go.mod	
+@@ -3,37 +3,23 @@
+ go 1.17
+ 
+ require (
+-	github.com/fsnotify/fsnotify v1.5.1 // indirect
+ 	github.com/gin-contrib/sse v0.1.0 // indirect
+ 	github.com/gin-gonic/gin v1.7.7 // indirect
+ 	github.com/go-playground/locales v0.13.0 // indirect
+ 	github.com/go-playground/universal-translator v0.17.0 // indirect
+ 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+ 	github.com/go-sql-driver/mysql v1.6.0 // indirect
+-	github.com/golang/protobuf v1.5.2 // indirect
+-	github.com/hashicorp/hcl v1.0.0 // indirect
++	github.com/golang/protobuf v1.3.3 // indirect
+ 	github.com/jinzhu/inflection v1.0.0 // indirect
+ 	github.com/jinzhu/now v1.1.4 // indirect
+-	github.com/json-iterator/go v1.1.12 // indirect
++	github.com/json-iterator/go v1.1.9 // indirect
+ 	github.com/leodido/go-urn v1.2.0 // indirect
+-	github.com/magiconair/properties v1.8.5 // indirect
+-	github.com/mattn/go-isatty v0.0.14 // indirect
+-	github.com/mitchellh/mapstructure v1.4.3 // indirect
+-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+-	github.com/modern-go/reflect2 v1.0.2 // indirect
+-	github.com/pelletier/go-toml v1.9.4 // indirect
+-	github.com/spf13/afero v1.6.0 // indirect
+-	github.com/spf13/cast v1.4.1 // indirect
+-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+-	github.com/spf13/pflag v1.0.5 // indirect
+-	github.com/spf13/viper v1.10.1 // indirect
+-	github.com/subosito/gotenv v1.2.0 // indirect
++	github.com/mattn/go-isatty v0.0.12 // indirect
++	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
++	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
+ 	github.com/ugorji/go/codec v1.1.7 // indirect
+-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
+-	golang.org/x/text v0.3.7 // indirect
+-	google.golang.org/protobuf v1.27.1 // indirect
+-	gopkg.in/ini.v1 v1.66.2 // indirect
++	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
++	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+ 	gopkg.in/yaml.v2 v2.4.0 // indirect
+ 	gorm.io/driver/mysql v1.3.3 // indirect
+ 	gorm.io/gorm v1.23.4 // indirect
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	
++++ b/.idea/.gitignore	
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml

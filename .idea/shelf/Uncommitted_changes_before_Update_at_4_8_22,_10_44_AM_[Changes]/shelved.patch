@@ -1,0 +1,215 @@
+Index: Types/ServiceType/ReservationRecord/ReservationRecord.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ReservationRecord\n\ntype ReservationRecord struct {\n\tID            uint\n\tReservationID uint\n\tOperatorID    uint\n\tOperationType string\n\tOperatingDay  string\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Types/ServiceType/ReservationRecord/ReservationRecord.go b/Types/ServiceType/ReservationRecord/ReservationRecord.go
+--- a/Types/ServiceType/ReservationRecord/ReservationRecord.go	(revision eb9aa35394696056dc1c9a38bbd7ea0061dc1b8a)
++++ b/Types/ServiceType/ReservationRecord/ReservationRecord.go	(date 1649385821481)
+@@ -4,6 +4,6 @@
+ 	ID            uint
+ 	ReservationID uint
+ 	OperatorID    uint
+-	OperationType string
++	OperationType int
+ 	OperatingDay  string
+ }
+Index: .idea/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+--- /dev/null	(date 1649385742904)
++++ b/.idea/.gitignore	(date 1649385742904)
+@@ -0,0 +1,8 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
++# Datasource local storage ignored files
++/dataSources/
++/dataSources.local.xml
+Index: .idea/TheLabSystem.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/TheLabSystem.iml b/.idea/TheLabSystem.iml
+new file mode 100644
+--- /dev/null	(date 1649385742912)
++++ b/.idea/TheLabSystem.iml	(date 1649385742912)
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="EMPTY_MODULE" version="4">
++  <component name="Go" enabled="true" />
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+Index: Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go b/Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go
+new file mode 100644
+--- /dev/null	(date 1649385742916)
++++ b/Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go	(date 1649385742916)
+@@ -0,0 +1,18 @@
++package SubmitReservationAndResponse
++
++import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
++
++type SubmitReservationRequest struct {
++	DeviceType  int    `json:"deviceType"`
++	Day         string `json:"day"`
++	Time        int    `json:"time"`
++	Num         int    `json:"num"`
++	Description string `json:"description"`
++}
++
++type SubmitReservationResponse struct {
++	Code ErrNo.ErrNo `json:"Code"`
++	Data struct {
++		Message string `json:"message"`
++	}
++}
+Index: go.mod
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>module TheLabSystem\n\ngo 1.17\n\nrequire (\n\tgithub.com/fsnotify/fsnotify v1.5.1 // indirect\n\tgithub.com/gin-contrib/sse v0.1.0 // indirect\n\tgithub.com/gin-gonic/gin v1.7.7 // indirect\n\tgithub.com/go-playground/locales v0.13.0 // indirect\n\tgithub.com/go-playground/universal-translator v0.17.0 // indirect\n\tgithub.com/go-playground/validator/v10 v10.4.1 // indirect\n\tgithub.com/go-sql-driver/mysql v1.6.0 // indirect\n\tgithub.com/golang/protobuf v1.5.2 // indirect\n\tgithub.com/hashicorp/hcl v1.0.0 // indirect\n\tgithub.com/jinzhu/inflection v1.0.0 // indirect\n\tgithub.com/jinzhu/now v1.1.4 // indirect\n\tgithub.com/json-iterator/go v1.1.12 // indirect\n\tgithub.com/leodido/go-urn v1.2.0 // indirect\n\tgithub.com/magiconair/properties v1.8.5 // indirect\n\tgithub.com/mattn/go-isatty v0.0.14 // indirect\n\tgithub.com/mitchellh/mapstructure v1.4.3 // indirect\n\tgithub.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect\n\tgithub.com/modern-go/reflect2 v1.0.2 // indirect\n\tgithub.com/pelletier/go-toml v1.9.4 // indirect\n\tgithub.com/spf13/afero v1.6.0 // indirect\n\tgithub.com/spf13/cast v1.4.1 // indirect\n\tgithub.com/spf13/jwalterweatherman v1.1.0 // indirect\n\tgithub.com/spf13/pflag v1.0.5 // indirect\n\tgithub.com/spf13/viper v1.10.1 // indirect\n\tgithub.com/subosito/gotenv v1.2.0 // indirect\n\tgithub.com/ugorji/go/codec v1.1.7 // indirect\n\tgolang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect\n\tgolang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect\n\tgolang.org/x/text v0.3.7 // indirect\n\tgoogle.golang.org/protobuf v1.27.1 // indirect\n\tgopkg.in/ini.v1 v1.66.2 // indirect\n\tgopkg.in/yaml.v2 v2.4.0 // indirect\n\tgorm.io/driver/mysql v1.3.3 // indirect\n\tgorm.io/gorm v1.23.4 // indirect\n)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/go.mod b/go.mod
+--- a/go.mod	(revision eb9aa35394696056dc1c9a38bbd7ea0061dc1b8a)
++++ b/go.mod	(date 1649385742936)
+@@ -3,37 +3,23 @@
+ go 1.17
+ 
+ require (
+-	github.com/fsnotify/fsnotify v1.5.1 // indirect
+ 	github.com/gin-contrib/sse v0.1.0 // indirect
+ 	github.com/gin-gonic/gin v1.7.7 // indirect
+ 	github.com/go-playground/locales v0.13.0 // indirect
+ 	github.com/go-playground/universal-translator v0.17.0 // indirect
+ 	github.com/go-playground/validator/v10 v10.4.1 // indirect
+ 	github.com/go-sql-driver/mysql v1.6.0 // indirect
+-	github.com/golang/protobuf v1.5.2 // indirect
+-	github.com/hashicorp/hcl v1.0.0 // indirect
++	github.com/golang/protobuf v1.3.3 // indirect
+ 	github.com/jinzhu/inflection v1.0.0 // indirect
+ 	github.com/jinzhu/now v1.1.4 // indirect
+-	github.com/json-iterator/go v1.1.12 // indirect
++	github.com/json-iterator/go v1.1.9 // indirect
+ 	github.com/leodido/go-urn v1.2.0 // indirect
+-	github.com/magiconair/properties v1.8.5 // indirect
+-	github.com/mattn/go-isatty v0.0.14 // indirect
+-	github.com/mitchellh/mapstructure v1.4.3 // indirect
+-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+-	github.com/modern-go/reflect2 v1.0.2 // indirect
+-	github.com/pelletier/go-toml v1.9.4 // indirect
+-	github.com/spf13/afero v1.6.0 // indirect
+-	github.com/spf13/cast v1.4.1 // indirect
+-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
+-	github.com/spf13/pflag v1.0.5 // indirect
+-	github.com/spf13/viper v1.10.1 // indirect
+-	github.com/subosito/gotenv v1.2.0 // indirect
++	github.com/mattn/go-isatty v0.0.12 // indirect
++	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
++	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
+ 	github.com/ugorji/go/codec v1.1.7 // indirect
+-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
+-	golang.org/x/text v0.3.7 // indirect
+-	google.golang.org/protobuf v1.27.1 // indirect
+-	gopkg.in/ini.v1 v1.66.2 // indirect
++	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9 // indirect
++	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+ 	gopkg.in/yaml.v2 v2.4.0 // indirect
+ 	gorm.io/driver/mysql v1.3.3 // indirect
+ 	gorm.io/gorm v1.23.4 // indirect
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+--- /dev/null	(date 1649385742920)
++++ b/.idea/modules.xml	(date 1649385742920)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/TheLabSystem.iml" filepath="$PROJECT_DIR$/.idea/TheLabSystem.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/dataSources.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/dataSources.xml b/.idea/dataSources.xml
+new file mode 100644
+--- /dev/null	(date 1649385742924)
++++ b/.idea/dataSources.xml	(date 1649385742924)
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
++    <data-source source="LOCAL" name="@localhost" uuid="87314a3f-7e10-4144-891a-b1baa6560092">
++      <driver-ref>mysql.8</driver-ref>
++      <synchronize>true</synchronize>
++      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
++      <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
++      <working-dir>$ProjectFileDir$</working-dir>
++    </data-source>
++  </component>
++</project>
+\ No newline at end of file
+Index: Types/ServiceType/Reservation/reservation.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Types/ServiceType/Reservation/reservation.go b/Types/ServiceType/Reservation/reservation.go
+new file mode 100644
+--- /dev/null	(date 1649385742940)
++++ b/Types/ServiceType/Reservation/reservation.go	(date 1649385742940)
+@@ -0,0 +1,7 @@
++package Reservation
++
++type Reservation struct {
++	ReservationID uint
++	ApplicantID   uint
++	OperatingDay  string
++}
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+--- /dev/null	(date 1649385742944)
++++ b/.idea/vcs.xml	(date 1649385742944)
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file

@@ -1,0 +1,16 @@
+Index: Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go b/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse/submitReservationRequestAndResponse.go
+rename from Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go
+rename to Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse/submitReservationRequestAndResponse.go
+--- a/Types/RequestAndResponseType/Reservation/submitReservationRequestAndResponse.go	
++++ b/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse/submitReservationRequestAndResponse.go	
+@@ -1,4 +1,4 @@
+-package SubmitReservationAndResponse
++package SubmitReservationRequestAndResponse
+ 
+ import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
+ 
