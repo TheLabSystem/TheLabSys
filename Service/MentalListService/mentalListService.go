@@ -54,18 +54,30 @@ func (service MentalListService) DeleteStudent(studentID uint, username string) 
 		StudentID: studentID,
 		TeacherID: user.UserID,
 	}
-	if MentorRecordDao.InsertMentorRecord(mentor) != nil {
+	if MentorRecordDao.DeleteMentorRecord(mentor) != nil {
 		return ErrNo.UnknownError
 	} else {
 		return ErrNo.OK
 	}
 }
 
-func (service MentalListService) ViewStudent(username string) ([]MentorRecord.MentorRecord, ErrNo.ErrNo) {
-	var res []MentorRecord.MentorRecord
+func (service MentalListService) ViewStudent(username string) ([]User.User, ErrNo.ErrNo) {
+	var errA error
+	var res []User.User
+	var rec []MentorRecord.MentorRecord
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
 		return res, ErrNo.UnknownError
+	}
+	rec, errB := MentorRecordDao.FindMentorRecordByTeacherID(user.UserID)
+	if errB != nil {
+		return res, ErrNo.UnknownError
+	}
+	for key := range rec {
+		res[key], errA = UserDao.FindUserByID(rec[key].StudentID)
+		if errA != nil {
+			return res, ErrNo.UnknownError
+		}
 	}
 	if user.Username == "" {
 		return res, ErrNo.LoginRequired
@@ -73,7 +85,6 @@ func (service MentalListService) ViewStudent(username string) ([]MentorRecord.Me
 	if user.UserType != 3 {
 		return res, ErrNo.PermDenied
 	}
-	res, err = MentorRecordDao.FindMentorRecordByTeacherID(user.UserID)
 	if err != nil {
 		return res, ErrNo.UnknownError
 	} else {
