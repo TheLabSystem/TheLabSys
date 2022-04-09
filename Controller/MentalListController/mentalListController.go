@@ -66,7 +66,7 @@ func (controller MentalListController) ViewStudentController(c *gin.Context) {
 		c.JSON(http.StatusOK, response)
 		return
 	}
-	response.Data.MentorRecords, response.Code = MentalListService.MentalListService{}.ViewStudent(cookie)
+	response.Data.Users, response.Code = MentalListService.MentalListService{}.ViewStudent(cookie)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }
