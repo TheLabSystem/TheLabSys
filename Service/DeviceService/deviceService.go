@@ -8,6 +8,7 @@ import (
 	"TheLabSystem/Dao/DeviceTypeInfoDao"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Types/RequestAndResponseType/Device/GetDeviceTypeRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Device/GetDevicesRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/ServiceType/Device"
 	"TheLabSystem/Types/ServiceType/DeviceOperation"
@@ -68,7 +69,6 @@ func (service DeviceService) AddDevice(username string, deviceID uint, deviceTyp
 	}
 	return ErrNo.OK
 }
-
 func (service DeviceService) GetDeviceType(username string) (ErrNo.ErrNo, []GetDeviceTypeRequestAndResponse.ResponseInfo) {
 	var responseInfo []GetDeviceTypeRequestAndResponse.ResponseInfo
 	user, err := UserDao.FindUserByUsername(username)
@@ -92,7 +92,6 @@ func (service DeviceService) GetDeviceType(username string) (ErrNo.ErrNo, []GetD
 	}
 	return ErrNo.OK, responseInfo
 }
-
 func (service DeviceService) UpdateDevice(username string, deviceID uint, deviceTypeID uint, deviceStatus int) ErrNo.ErrNo {
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
@@ -131,4 +130,31 @@ func (service DeviceService) DeleteDevice(username string, deviceID uint) ErrNo.
 		return ErrNo.UnknownError
 	}
 	return ErrNo.OK
+}
+func (service DeviceService) GetDevices(username string) ([]GetDevicesRequestAndResponse.DeviceTypeAndIDs, ErrNo.ErrNo) {
+	var res []GetDevicesRequestAndResponse.DeviceTypeAndIDs
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}
+	if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	var deviceTypes []DeviceTypeInfo.DeviceTypeInfo
+	deviceTypes, err = DeviceTypeInfoDao.FindAllDeviceTypeInfo()
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}
+	res = make([]GetDevicesRequestAndResponse.DeviceTypeAndIDs, len(deviceTypes), len(deviceTypes))
+	for k := range deviceTypes {
+		var res1 = GetDevicesRequestAndResponse.DeviceTypeAndIDs{
+			TypeInfo: deviceTypes[k],
+		}
+		res1.Devices, err = DeviceDao.FindDeviceByTypeID(deviceTypes[k].DeviceTypeID)
+		if err != nil {
+			return res, ErrNo.UnknownError
+		}
+		res[k] = res1
+	}
+	return res, ErrNo.OK
 }
