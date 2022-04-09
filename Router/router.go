@@ -50,7 +50,7 @@ func RegisterRouter(r *gin.Engine) {
 	g.GET("/device/getDeviceType", DeviceController.DeviceController{}.GetDeviceType)
 	g.POST("/device/updateDevice", DeviceController.DeviceController{}.UpdateDevice)
 	g.POST("/device/deleteDevice", DeviceController.DeviceController{}.DeleteDevice)
-
+	g.POST("/device/getDevices", DeviceController.DeviceController{}.GetDevices)
 	// reservation
 	g.POST("/reservation/submitReservation", ReservationController.ReservationController{}.SubmitReservation)
 	g.POST("/reservation/revertReservation", ReservationController.ReservationController{}.RevertReservation)
