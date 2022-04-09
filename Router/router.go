@@ -43,7 +43,7 @@ func RegisterRouter(r *gin.Engine) {
 	// mentorList service
 	g.POST("/mentalList/addStudent", MentalListController.MentalListController{}.AddStudentController)
 	g.POST("/mentalList/deleteStudent", MentalListController.MentalListController{}.DeleteStudentController)
-	g.GET("/mentalList/viewStudent", MentalListController.MentalListController{}.ViewStudentController)
+	g.POST("/mentalList/viewStudent", MentalListController.MentalListController{}.ViewStudentController)
 
 	// device
 	g.POST("/device/addDevice", DeviceController.DeviceController{}.AddDevice)
