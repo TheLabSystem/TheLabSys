@@ -4,6 +4,7 @@ import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Dao/ReservationInfoDao"
 	"TheLabSystem/Types/ServiceType/Reservation"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"time"
@@ -169,4 +170,28 @@ func FindDisapprovalReservation() ([]Reservation.Reservation, error) {
 		}
 	}
 	return reservation, err
+}
+
+func FindReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
+	var reservationDaos []ReservationDao
+	var reservations []Reservation.Reservation
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Where(&Reservation.Reservation{ApplicantID: id}).Find(&reservationDaos).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return reservations, nil
+	} else if err != nil {
+		fmt.Println("Error happened in when finding reservation by applicantID in function FindReservationByApplicantID")
+	} else {
+		reservations = make([]Reservation.Reservation, len(reservationDaos), len(reservationDaos))
+		for key := range reservationDaos {
+			reservations[key] = convertDaoToReservation(reservationDaos[key])
+		}
+	}
+	return reservations, err
 }

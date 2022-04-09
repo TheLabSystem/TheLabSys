@@ -71,9 +71,9 @@ func InsertReservationRecord(rr ReservationRecord.ReservationRecord) error {
 	return err
 }
 
-func FindReservationRecordByReservationID(id uint) (ReservationRecord.ReservationRecord, error) {
-	var rrDao ReservationRecordDao
-	var rr ReservationRecord.ReservationRecord
+func FindReservationRecordByReservationID(id uint) ([]ReservationRecord.ReservationRecord, error) {
+	var rrDao []ReservationRecordDao
+	var rr []ReservationRecord.ReservationRecord
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
 			if err := tx.Where("reservation_id=?", id).First(&rrDao).Error; err != nil {
@@ -85,7 +85,10 @@ func FindReservationRecordByReservationID(id uint) (ReservationRecord.Reservatio
 	if err != nil {
 		fmt.Println("Error happened when finding ReservationRecords in function ReservationRecordDao.FindReservationRecordByReservationID()")
 	} else {
-		rr = convertDaoToReservationRecord(rrDao)
+		rr = make([]ReservationRecord.ReservationRecord, len(rrDao), len(rrDao))
+		for key := range rrDao {
+			rr[key] = convertDaoToReservationRecord(rrDao[key])
+		}
 	}
 	return rr, err
 }

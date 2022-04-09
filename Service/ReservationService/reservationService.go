@@ -121,3 +121,33 @@ func (service ReservationService) GetApproval(username string, request *GetAppro
 	}
 	return reservation, ErrNo.OK
 }
+func (service ReservationService) GetPersonalReservations(username string) ([]Reservation.Reservation, ErrNo.ErrNo) {
+	user, err := UserDao.FindUserByUsername(username)
+	var res []Reservation.Reservation
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	res, err = ReservationDao.FindReservationByApplicantID(user.UserID)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else {
+		return res, ErrNo.OK
+	}
+}
+func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) (ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
+	user, err := UserDao.FindUserByUsername(username)
+	var res ReservationInfo.ReservationInfo
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	res, err = ReservationInfoDao.FindInfoByReservationID(reservationID)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else {
+		return res, ErrNo.OK
+	}
+}
