@@ -7,6 +7,7 @@ import (
 	"TheLabSystem/Dao/ReservationRecordDao"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
+	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
 	"TheLabSystem/Types/ServiceType/Reservation"
@@ -94,7 +95,32 @@ func (service ReservationService) RevertReservation(username string, reservation
 	}
 	return ErrNo.OK
 }
-
+func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]Reservation.Reservation, ErrNo.ErrNo) {
+	var reservation []Reservation.Reservation
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return reservation, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return reservation, ErrNo.LoginRequired
+	}
+	if request.Status == 1 {
+		reservation, err = ReservationDao.FindAllReservation()
+		if err != nil {
+			return reservation, ErrNo.UnknownError
+		}
+	} else if request.Status == 2 {
+		reservation, err = ReservationDao.FindApprovalReservation()
+		if err != nil {
+			return reservation, ErrNo.UnknownError
+		}
+	} else if request.Status == 3 {
+		reservation, err = ReservationDao.FindDisapprovalReservation()
+		if err != nil {
+			return reservation, ErrNo.UnknownError
+		}
+	}
+	return reservation, ErrNo.OK
+}
 func (service ReservationService) GetPersonalReservations(username string) ([]Reservation.Reservation, ErrNo.ErrNo) {
 	user, err := UserDao.FindUserByUsername(username)
 	var res []Reservation.Reservation
@@ -110,17 +136,18 @@ func (service ReservationService) GetPersonalReservations(username string) ([]Re
 		return res, ErrNo.OK
 	}
 }
-
-func (service ReservationService) GetReservationByID(username string,reservationID uint)([]ReservationRecord.ReservationRecord,ErrNo.ErrNo){
+func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) (ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
 	user, err := UserDao.FindUserByUsername(username)
-	var res []ReservationRecord.ReservationRecord
+	var res ReservationInfo.ReservationInfo
 	if err != nil {
 		return res, ErrNo.UnknownError
 	} else if user.Username == "" {
 		return res, ErrNo.LoginRequired
 	}
-	res,err = ReservationInfoDao.
+	res, err = ReservationInfoDao.FindInfoByReservationID(reservationID)
 	if err != nil {
 		return res, ErrNo.UnknownError
-	}else{return res,ErrNo.OK}
+	} else {
+		return res, ErrNo.OK
+	}
 }
