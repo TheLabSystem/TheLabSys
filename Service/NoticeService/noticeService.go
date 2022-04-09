@@ -33,21 +33,13 @@ func (noticeService NoticeService) AddNotice(cookie string, title string, conten
 	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK)
 }
 
-func (noticeService NoticeService) GetNoticeList(offset int, limit int) (ErrNo.ErrNo, string, []Notice.Notice, int) {
-	noticeList, total, err := NoticeDao.FindNoticeByOffset(offset, limit)
+func (noticeService NoticeService) GetNoticeList() (ErrNo.ErrNo, string, []Notice.Notice) {
+	noticeList, err := NoticeDao.FindNoticeByOffset()
 	if err != nil {
 		fmt.Println(err)
-		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError), noticeList, total
+		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError), noticeList
 	}
-	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK), noticeList, total
-}
-
-func (noticeService NoticeService) GetNoticeListByIssuer(issuerId int) (ErrNo.ErrNo, string, []Notice.Notice, int) {
-	noticeList, total, err := NoticeDao.FindNoticeByIssuerID(uint(issuerId))
-	if err != nil {
-		return ErrNo.UnknownError, ErrorInformation.GenerateErrorInformation(ErrNo.UnknownError), noticeList, 0
-	}
-	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK), noticeList, total
+	return ErrNo.OK, ErrorInformation.GenerateErrorInformation(ErrNo.OK), noticeList
 }
 
 func (noticeService NoticeService) DeleteNotice(username string, noticeId int) (ErrNo.ErrNo, string) {
