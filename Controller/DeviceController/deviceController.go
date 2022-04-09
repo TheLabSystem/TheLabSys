@@ -6,6 +6,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Device/AddDeviceRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Device/DeleteDeviceRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Device/GetDeviceTypeRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Device/GetDevicesRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Device/UpdateDeviceRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"github.com/gin-gonic/gin"
@@ -87,6 +88,26 @@ func (controller DeviceController) DeleteDevice(c *gin.Context) {
 		return
 	}
 	response.Code = DeviceService.DeviceService{}.DeleteDevice(cookie, request.DeviceID)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+	return
+}
+
+func (controller DeviceController) GetDevices(c *gin.Context) {
+	var request = &GetDevicesRequestAndResponse.GetDevicesRequest{}
+	var response = &GetDevicesRequestAndResponse.GetDevicesResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Data.Devices, response.Code = DeviceService.DeviceService{}.GetDevices(cookie)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 	return
