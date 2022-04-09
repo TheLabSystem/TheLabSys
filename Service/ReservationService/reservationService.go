@@ -258,3 +258,7 @@ func (service ReservationService) GetReservationByReservationID(username string,
 		return res, ErrNo.OK
 	}
 }
+
+//func (service ReservationService) GetReservationDetails(username string, day string, deviceTypeID uint) ([]int, error) {
+//
+//}

@@ -3,6 +3,7 @@ package DeviceTypeInfoDao
 import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -86,8 +87,11 @@ func FindAllDeviceTypeInfo() ([]DeviceTypeInfo.DeviceTypeInfo, error) {
 			}
 			return nil
 		})
-	if err != nil {
-		fmt.Println("查找设备类型信息出错")
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		err = nil
+	} else if err != nil {
+		fmt.Println("Error happened when finding deviceTypeInfo in function DeviceTypeInfoDao.FindAllDeviceTypeInfo()")
+		fmt.Println(err)
 	} else {
 		info = make([]DeviceTypeInfo.DeviceTypeInfo, len(dao), len(dao))
 		for key := range dao {
