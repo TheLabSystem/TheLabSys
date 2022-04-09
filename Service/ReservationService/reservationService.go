@@ -94,3 +94,33 @@ func (service ReservationService) RevertReservation(username string, reservation
 	}
 	return ErrNo.OK
 }
+
+func (service ReservationService) GetPersonalReservations(username string) ([]Reservation.Reservation, ErrNo.ErrNo) {
+	user, err := UserDao.FindUserByUsername(username)
+	var res []Reservation.Reservation
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	res, err = ReservationDao.FindReservationByApplicantID(user.UserID)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else {
+		return res, ErrNo.OK
+	}
+}
+
+func (service ReservationService) GetReservationByID(username string,reservationID uint)([]ReservationRecord.ReservationRecord,ErrNo.ErrNo){
+	user, err := UserDao.FindUserByUsername(username)
+	var res []ReservationRecord.ReservationRecord
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	res,err = ReservationInfoDao.
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}else{return res,ErrNo.OK}
+}
