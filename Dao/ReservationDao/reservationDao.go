@@ -44,7 +44,7 @@ func convertDaoToReservation(reservationDao ReservationDao) Reservation.Reservat
 	return Reservation.Reservation{
 		ReservationID: reservationDao.ID,
 		ApplicantID:   reservationDao.ApplicantID,
-		OperatingDay:  reservationDao.CreatedAt.String(),
+		OperatingDay:  reservationDao.CreatedAt.Format("2006-01-02"),
 		Status:        reservationDao.Status,
 	}
 }
