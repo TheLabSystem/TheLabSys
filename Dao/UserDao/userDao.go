@@ -155,11 +155,11 @@ func FindUserByUsername(username string) (User.User, error) {
 	}
 	return user, err
 }
-func FindUserByOffset(offset int, limit int) ([]User.User, error) {
-	var daos = make([]UserDao, limit, limit)
-	var users = make([]User.User, limit, limit)
+func FindAllUser() ([]User.User, error) {
+	var dao []UserDao
+	var users []User.User
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Limit(limit).Offset(offset).Order("id").Find(&daos).Error; err != nil {
+		if err := tx.Find(&dao).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
@@ -169,8 +169,8 @@ func FindUserByOffset(offset int, limit int) ([]User.User, error) {
 		fmt.Println("Error happened when finding users in function UserDao.FindAllUser()")
 		return users, err
 	}
-	for key := range daos {
-		users[key] = convertDaoToUser(daos[key])
+	for key := range dao {
+		users[key] = convertDaoToUser(dao[key])
 	}
 	return users, nil
 }
