@@ -9,6 +9,7 @@ import (
 	"TheLabSystem/Controller/ReservationController"
 	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -55,4 +56,6 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/reservation/revertReservation", ReservationController.ReservationController{}.RevertReservation)
 	g.GET("/reservation/getApproval", ReservationController.ReservationController{}.GetApproval)
 	g.POST("/reservation/setApproval", ReservationController.ReservationController{}.SetApproval)
+	g.GET("/reservation/getPersonalReservations", ReservationController.ReservationController{}.GetPersonalReservations)
+	g.GET("/reservation/getReservationInfoByReservationID", ReservationController.ReservationController{}.GetReservationInfo)
 }
