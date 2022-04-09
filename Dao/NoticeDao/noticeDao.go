@@ -113,44 +113,38 @@ func FindNoticeByID(id uint) (Notice.Notice, error) {
 	}
 	return notice, err
 }
-func FindNoticeByIssuerID(issuerid uint) ([]Notice.Notice, int, error) {
-	var noticeDaos []NoticeDao
-	var notices []Notice.Notice
-	err := db.Transaction(
-		func(tx *gorm.DB) error {
-			if err := tx.Where("issuer_id=?", issuerid).Find(&noticeDaos).Error; err != nil {
-				tx.Rollback()
-				return err
-			}
-			return nil
-		})
-	if err != nil {
-		fmt.Println("Error happened when finding notices in function NoticeDao.FindNoticeByIssuerID()")
-	} else {
-		for key := range noticeDaos {
-			notices[key] = convertDaoToNotice(noticeDaos[key])
-		}
-	}
-	return notices, len(notices), err
-}
-func FindNoticeByOffset(offset int, limit int) ([]Notice.Notice, int, error) {
+func FindNoticeByOffset() ([]Notice.Notice, error) {
 	var count int64
-	var daos = make([]NoticeDao, limit)
-	var notices = make([]Notice.Notice, limit)
-	err := db.Transaction(
+	var daos = make([]NoticeDao, 0)
+	err1 := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Limit(limit).Offset(offset).Order("id").Find(&daos).Count(&count).Error; err != nil {
+			if err1 := tx.Find(&daos).Count(&count).Error; err1 != nil {
 				tx.Rollback()
-				return err
+				return err1
 			}
 			return nil
 		})
-	if err != nil {
-		fmt.Println("Error happened when finding users in function NoticeDao.FindAllNotice()")
-		return notices, int(count), err
+	if err1 != nil {
+		fmt.Println("Error happened when finding users in function NoticeDao.FindAllNotice()1")
+		return make([]Notice.Notice, 0), err1
 	}
-	for key := range daos {
+	daos = make([]NoticeDao, count)
+	var notices = make([]Notice.Notice, count)
+	err2 := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err2 := tx.Order("id").Find(&daos).Error; err2 != nil {
+				tx.Rollback()
+				return err2
+			}
+			return nil
+		})
+	if err2 != nil {
+		fmt.Println("Error happened when finding users in function NoticeDao.FindAllNotice()2")
+		return notices, err2
+	}
+	for key := 0; key < len(daos); key++ {
+		fmt.Println(key, daos[key])
 		notices[key] = convertDaoToNotice(daos[key])
 	}
-	return notices, int(count), nil
+	return notices, nil
 }

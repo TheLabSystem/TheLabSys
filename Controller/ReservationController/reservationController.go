@@ -9,8 +9,9 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetReservationInfoByReservationIDRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/RevertReservationRequestAndRespoonse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type ReservationController struct {

@@ -6,7 +6,6 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/NoticeService/NoticeRequestAndResponse"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,20 +33,7 @@ func (controller NoticeController) AddNotice(c *gin.Context) {
 
 func (controller NoticeController) GetNoticeList(c *gin.Context) {
 	response := &NoticeRequestAndResponse.GetNoticeResponse{}
-	issuerId, issuerIdErr := strconv.Atoi(c.DefaultQuery("issuerId", "-1"))
-	offset, offsetErr := strconv.Atoi(c.DefaultQuery("offset", "0"))
-	limit, limitErr := strconv.Atoi(c.DefaultQuery("limit", "5"))
-	if issuerIdErr != nil || offsetErr != nil || limitErr != nil {
-		response.Code = ErrNo.ParamInvalid
-		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
-		c.JSON(http.StatusOK, response)
-		return
-	}
-	if issuerId == -1 {
-		response.Code, response.Data.Message, response.Data.Notice, response.Data.Total = NoticeService.NoticeService{}.GetNoticeList(offset, limit)
-	} else {
-		response.Code, response.Data.Message, response.Data.Notice, response.Data.Total = NoticeService.NoticeService{}.GetNoticeListByIssuer(issuerId)
-	}
+	response.Code, response.Data.Message, response.Data.Notice = NoticeService.NoticeService{}.GetNoticeList()
 	c.JSON(http.StatusOK, response)
 }
 
