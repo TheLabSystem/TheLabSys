@@ -30,6 +30,9 @@ func connectDatabase() {
 func init() {
 	connectDatabase()
 }
+func (ReservationDao) TableName() string {
+	return "reservation"
+}
 func convertReservationToDao(reservation Reservation.Reservation) ReservationDao {
 	return ReservationDao{
 		ApplicantID: reservation.ApplicantID,

@@ -9,9 +9,10 @@ import (
 
 type BillDao struct {
 	gorm.Model
-	PayerID    uint    `gorm:"type:uint"`
-	Money      float64 `gorm:"type:int"`
-	BillStatus int     `gorm:"type:int"`
+	ReservationID uint    `gorm:"type:uint"`
+	PayerID       uint    `gorm:"type:uint"`
+	Money         float64 `gorm:"type:int"`
+	BillStatus    int     `gorm:"type:int"`
 }
 
 var db *gorm.DB
@@ -34,17 +35,19 @@ func (BillDao) TableName() string {
 }
 func convertBillToDao(bill Bill.Bill) BillDao {
 	return BillDao{
-		PayerID:    bill.PayerID,
-		Money:      bill.Money,
-		BillStatus: bill.BillStatus,
+		ReservationID: bill.ReservationID,
+		PayerID:       bill.PayerID,
+		Money:         bill.Money,
+		BillStatus:    bill.BillStatus,
 	}
 }
 func convertDaoToBill(dao BillDao) Bill.Bill {
 	return Bill.Bill{
-		BillID:     dao.ID,
-		PayerID:    dao.PayerID,
-		Money:      dao.Money,
-		BillStatus: dao.BillStatus,
+		BillID:        dao.ID,
+		ReservationID: dao.ReservationID,
+		PayerID:       dao.PayerID,
+		Money:         dao.Money,
+		BillStatus:    dao.BillStatus,
 	}
 }
 func InsertBill(bill Bill.Bill) error {
