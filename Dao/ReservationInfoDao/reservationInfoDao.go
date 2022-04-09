@@ -62,3 +62,21 @@ func InsertReservationInfo(info ReservationInfo.ReservationInfo) error {
 	}
 	return err
 }
+func FindInfoByReservationID(id uint) (ReservationInfo.ReservationInfo, error) {
+	var dao ReservationInfoDao
+	var info ReservationInfo.ReservationInfo
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Where("reservation_id=?", id).First(&dao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if err != nil {
+		fmt.Println("Error happened when Finding reservationInfo in function ReservationInfoDao.FindInfoByReservationID()")
+	} else {
+		info = convertDaoToInfo(dao)
+	}
+	return info, err
+}

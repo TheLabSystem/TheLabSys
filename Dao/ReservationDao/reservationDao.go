@@ -2,9 +2,11 @@ package ReservationDao
 
 import (
 	"TheLabSystem/Dao/DBAccessor"
+	"TheLabSystem/Dao/ReservationInfoDao"
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"fmt"
 	"gorm.io/gorm"
+	"time"
 )
 
 type ReservationDao struct {
@@ -131,9 +133,18 @@ func FindApprovalReservation() ([]Reservation.Reservation, error) {
 	if err != nil {
 		fmt.Println("查找预约出现错误")
 	} else {
+		var i = 0
 		reservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))
-		for key := range reservationDao {
-			reservation[key] = convertDaoToReservation(reservationDao[key])
+		for key := 0; key < len(reservationDao); key++ {
+			info, err := ReservationInfoDao.FindInfoByReservationID(reservationDao[key].ID)
+			if err != nil {
+				fmt.Println("error!")
+			}
+			day, _ := time.Parse("2006-01-02", info.ReservationDay)
+			if day.Before(time.Now()) {
+				reservation[i] = convertDaoToReservation(reservationDao[key])
+				i++
+			}
 		}
 	}
 	return reservation, err
