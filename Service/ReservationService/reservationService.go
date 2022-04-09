@@ -1,6 +1,7 @@
 package ReservationService
 
 import (
+	"TheLabSystem/Config/UserPermissionDecide"
 	"TheLabSystem/Dao/DeviceDao"
 	"TheLabSystem/Dao/ReservationDao"
 	"TheLabSystem/Dao/ReservationInfoDao"
@@ -8,6 +9,7 @@ import (
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetApprovalRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
 	"TheLabSystem/Types/ServiceType/Reservation"
@@ -120,4 +122,109 @@ func (service ReservationService) GetApproval(username string, request *GetAppro
 		}
 	}
 	return reservation, ErrNo.OK
+}
+func (service ReservationService) SetApproval(username string, request *SetApprovalRequestAndResponse.SetApprovalRequest) ErrNo.ErrNo {
+	reservation, errB := ReservationDao.FindReservationByID(request.ReservationID)
+	if errB != nil {
+		return ErrNo.UnknownError
+	}
+	user, err := UserDao.FindUserByUsername(username)
+	if err != nil {
+		return ErrNo.UnknownError
+	} else if user.Username == "" {
+		return ErrNo.LoginRequired
+	} else if !UserPermissionDecide.SetApproval(user.UserType) {
+		return ErrNo.PermDenied
+	}
+	if reservation.Status == 112 {
+		if user.UserType == 3 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 12); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	if reservation.Status == 12 {
+		if user.UserType == 4 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 1); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	if reservation.Status == 21234 {
+		if user.UserType == 4 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 2234); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	if reservation.Status == 234 {
+		if user.UserType == 255 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 24); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	if reservation.Status == 24 {
+		if user.UserType == 255 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 2); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	if reservation.Status == 32 {
+		if user.UserType == 4 {
+			if request.Approval == 1 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, 3); err != nil {
+					return ErrNo.UnknownError
+				}
+			} else if request.Approval == 2 {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
+		} else {
+			return ErrNo.PermDenied
+		}
+	}
+	return ErrNo.OK
 }

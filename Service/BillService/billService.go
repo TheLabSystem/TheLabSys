@@ -2,6 +2,7 @@ package BillService
 
 import (
 	"TheLabSystem/Dao/BillDao"
+	"TheLabSystem/Dao/ReservationDao"
 	"TheLabSystem/Dao/UserDao"
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/ServiceType/Bill"
@@ -45,6 +46,15 @@ func (billService BillService) PayBill(billID uint, username string) ErrNo.ErrNo
 		}
 		if err := BillDao.UpdateBillStatus(billID, 1); err != nil {
 			return ErrNo.UnknownError
+		}
+		if reservation, err := ReservationDao.FindReservationByID(bill.ReservationID); err != nil {
+			return ErrNo.UnknownError
+		} else {
+			if reservation.Status == 2234 {
+				if err := ReservationDao.UpdateReservation(reservation.ReservationID, 234); err != nil {
+					return ErrNo.UnknownError
+				}
+			}
 		}
 	}
 	return ErrNo.OK
