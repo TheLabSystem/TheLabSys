@@ -6,6 +6,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/ErrNo"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetPersonalReservationRequestAndResponse"
+	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetReservationDetailsRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetReservationInfoByReservationIDRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/RevertReservationRequestAndRespoonse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
@@ -128,6 +129,25 @@ func (controller ReservationController) GetReservationInfo(c *gin.Context) {
 		return
 	}
 	response.Data.ReservationInfo, response.Code = ReservationService.ReservationService{}.GetReservationByReservationID(cookie, request.ReservationID)
+	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+	c.JSON(http.StatusOK, response)
+}
+
+func (controller ReservationController) GetReservationDetailsController(c *gin.Context) {
+	var request = &GetReservationDetailsRequestAndResponse.GetReservationDetailsRequest{}
+	var response = &GetReservationDetailsRequestAndResponse.GetReservationDetailsResponse{}
+	if err := c.ShouldBindJSON(request); err != nil {
+		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+		return
+	}
+	cookie, err := c.Cookie("camp-session")
+	if err != nil {
+		response.Code = ErrNo.LoginRequired
+		response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
+		c.JSON(http.StatusOK, response)
+		return
+	}
+	response.Data.Nums, response.Code = ReservationService.ReservationService{}.GetReservationDetails(cookie, request.Day, request.DeviceType)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }
