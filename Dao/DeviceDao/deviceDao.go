@@ -3,6 +3,7 @@ package DeviceDao
 import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Types/ServiceType/Device"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -130,6 +131,30 @@ func FindDeviceByTypeID(id uint) ([]Device.Device, error) {
 		})
 	if err != nil {
 		fmt.Println("Error happened when finding devices in function DeviceDao.FindDeviceByTypeID()")
+		fmt.Println(err)
+	}
+	devices = make([]Device.Device, len(daos), len(daos))
+	for key := range daos {
+		devices[key] = convertDaoToDevice(daos[key])
+	}
+	return devices, err
+}
+func FindDeviceByTypeAllRecordNotFound(id uint) ([]Device.Device, error) {
+	var daos []DeviceDao
+	var devices []Device.Device
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Where(&DeviceDao{DeviceTypeID: id}).Find(&daos).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return devices, nil
+	}
+	if err != nil {
+		fmt.Println("Error happened when finding devices in function DeviceDao.FindDeviceByTypeAllRecordNotFound()")
 		fmt.Println(err)
 	}
 	devices = make([]Device.Device, len(daos), len(daos))

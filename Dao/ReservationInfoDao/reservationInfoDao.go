@@ -3,6 +3,7 @@ package ReservationInfoDao
 import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Types/ServiceType/ReservationInfo"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -80,6 +81,29 @@ func FindInfoByReservationID(id uint) (ReservationInfo.ReservationInfo, error) {
 		fmt.Println("Error happened when Finding reservationInfo in function ReservationInfoDao.FindInfoByReservationID()")
 	} else {
 		info = convertDaoToInfo(dao)
+	}
+	return info, err
+}
+func FindAllReservationInfo() ([]ReservationInfo.ReservationInfo, error) {
+	var dao []ReservationInfoDao
+	var info []ReservationInfo.ReservationInfo
+	err := db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Find(&dao).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+		return nil
+	})
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		err = nil
+	}
+	if err != nil {
+		fmt.Println("Error happened when Finding reservationInfo in function ReservationInfoDao.FindInfoByReservationByType()")
+	} else {
+		info = make([]ReservationInfo.ReservationInfo, len(dao), len(dao))
+		for k := range dao {
+			info[k] = convertDaoToInfo(dao[k])
+		}
 	}
 	return info, err
 }

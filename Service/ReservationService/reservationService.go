@@ -12,6 +12,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
+	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"TheLabSystem/Types/ServiceType/ReservationInfo"
 	"TheLabSystem/Types/ServiceType/ReservationRecord"
@@ -258,7 +259,19 @@ func (service ReservationService) GetReservationByReservationID(username string,
 		return res, ErrNo.OK
 	}
 }
-
-//func (service ReservationService) GetReservationDetails(username string, day string, deviceTypeID uint) ([]int, error) {
-//
-//}
+func (service ReservationService) GetReservationDetails(username string, day string, deviceTypeID uint) ([]int, ErrNo.ErrNo) {
+	user, err := UserDao.FindUserByUsername(username)
+	var res []int
+	if err != nil {
+		return res, ErrNo.UnknownError
+	} else if user.Username == "" {
+		return res, ErrNo.LoginRequired
+	}
+	var devices []Device.Device
+	devices, err = DeviceDao.FindDeviceByTypeAllRecordNotFound(deviceTypeID)
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}
+	var info []DeviceTypeInfo.DeviceTypeInfo
+	info, err = DeviceDao
+}
