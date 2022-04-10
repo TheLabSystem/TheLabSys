@@ -1,9 +1,39 @@
 # TheLabSys
 
-# For Backend
+# How to Use the Project?
 
-The project uses gin and gorm.
-For gorm,see https://learnku.com/docs/gorm/v2 for more.
+# Install golang
+
+Go is a wonderful programming language.You have to install it before using our programs.
+If you have already installed it, you can skip this step.
+For Linux, you can use the command below.
+```
+sudo apt-get install golang-go
+```
+If your computer is not a Linux one, or you don't really enjoy the terminal,see the [installation guide](https://golang.org/doc/install) for more information.
+
+# Download the Project
+
+You can download the project from [GitHub]("https://github.com/TheLabSystem/TheLabSys").
+
+# Install some dependencies And Change the Directory
+
+Some dependencies are required to run the project.
+See Config/Config.yaml for more information.
+```
+go get gorm.io/gorm
+go get gorm.io/driver/mysql
+go get gopkg.in/yaml.v2
+go get github.com/gin-gonic/gin
+go get github.com/deckarep/golang-set
+```
+
+# Run the Project
+
+If you have installed the dependencies, you can run the project.
+```
+go run main.go
+```
 
 
 # For Code
