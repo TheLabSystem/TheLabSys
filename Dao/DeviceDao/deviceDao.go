@@ -139,7 +139,7 @@ func FindDeviceByTypeID(id uint) ([]Device.Device, error) {
 	}
 	return devices, err
 }
-func FindDeviceByTypeAllRecordNotFound(id uint) ([]Device.Device, error) {
+func FindDeviceByTypeAllowRecordNotFound(id uint) ([]Device.Device, error) {
 	var daos []DeviceDao
 	var devices []Device.Device
 	err := db.Transaction(
@@ -151,7 +151,7 @@ func FindDeviceByTypeAllRecordNotFound(id uint) ([]Device.Device, error) {
 			return nil
 		})
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return devices, nil
+		return nil, nil
 	}
 	if err != nil {
 		fmt.Println("Error happened when finding devices in function DeviceDao.FindDeviceByTypeAllRecordNotFound()")
