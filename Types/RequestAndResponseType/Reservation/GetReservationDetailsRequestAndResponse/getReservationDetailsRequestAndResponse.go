@@ -4,7 +4,7 @@ import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
 
 type GetReservationDetailsRequest struct {
 	Day        string `json:"day"`
-	DeviceType uint   `json:"device_type"`
+	DeviceType uint   `json:"device_type_id"`
 }
 
 type GetReservationDetailsResponse struct {
