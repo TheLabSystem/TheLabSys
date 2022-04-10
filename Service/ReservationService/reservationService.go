@@ -12,10 +12,11 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
-	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"TheLabSystem/Types/ServiceType/ReservationInfo"
 	"TheLabSystem/Types/ServiceType/ReservationRecord"
+	"fmt"
+	mapset "github.com/deckarep/golang-set"
 	"time"
 )
 
@@ -268,10 +269,38 @@ func (service ReservationService) GetReservationDetails(username string, day str
 		return res, ErrNo.LoginRequired
 	}
 	var devices []Device.Device
-	devices, err = DeviceDao.FindDeviceByTypeAllRecordNotFound(deviceTypeID)
+	devices, err = DeviceDao.FindDeviceByTypeAllowRecordNotFound(deviceTypeID)
+	var deviceIdSet = mapset.NewSet()
+	for key := range devices {
+		if devices[key].DeviceStatus == 2 {
+			deviceIdSet.Add(devices[key].DeviceID)
+		}
+	}
+	fmt.Println(devices)
 	if err != nil {
 		return res, ErrNo.UnknownError
 	}
-	var info []DeviceTypeInfo.DeviceTypeInfo
-	info, err = DeviceDao
+	var info []ReservationInfo.ReservationInfo
+	info, err = ReservationInfoDao.FindAllReservationInfo()
+	if err != nil {
+		return res, ErrNo.UnknownError
+	}
+	res = make([]int, 12, 12)
+	for key := range res {
+		res[key] = len(devices)
+	}
+	for key := range info {
+		if deviceIdSet.Contains(info[key].DeviceID) && info[key].ReservationDay == day {
+			var reservation Reservation.Reservation
+			reservation, err = ReservationDao.FindReservationByID(info[key].ReservationID)
+			if err != nil {
+				return nil, ErrNo.UnknownError
+			} else {
+				if reservation.Status < 10 {
+					res[info[key].ReservationTime]--
+				}
+			}
+		}
+	}
+	return res, ErrNo.OK
 }
