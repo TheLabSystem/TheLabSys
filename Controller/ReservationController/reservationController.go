@@ -72,7 +72,7 @@ func (controller ReservationController) GetApproval(c *gin.Context) {
 		c.JSON(http.StatusOK, response)
 		return
 	}
-	response.Data.Approval, response.Code = ReservationService.ReservationService{}.GetApproval(cookie, request)
+	response.Data.ApprovalRes, response.Code = ReservationService.ReservationService{}.GetApproval(cookie, request)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 	return
