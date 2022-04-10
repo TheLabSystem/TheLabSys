@@ -3,6 +3,7 @@ package ReservationService
 import (
 	"TheLabSystem/Config/UserPermissionDecide"
 	"TheLabSystem/Dao/DeviceDao"
+	"TheLabSystem/Dao/DeviceTypeInfoDao"
 	"TheLabSystem/Dao/ReservationDao"
 	"TheLabSystem/Dao/ReservationInfoDao"
 	"TheLabSystem/Dao/ReservationRecordDao"
@@ -74,9 +75,14 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 		return ErrNo.UnknownError
 	}
 	for i := 0; i < request.Num; i++ {
+		typeInfo, errB := DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(devices[i].DeviceTypeID)
+		if errB != nil {
+			return ErrNo.UnknownError
+		}
 		info := ReservationInfo.ReservationInfo{
 			ReservationID:   reservation.ReservationID,
 			DeviceID:        devices[i].DeviceID,
+			DeviceTypeInfo:  typeInfo.DeviceInfo,
 			ReservationDay:  request.Day,
 			ReservationTime: request.Time,
 		}
