@@ -15,4 +15,4 @@ import:
   gin:
     location: github.com/gin-gonic/gin
   set:
-    location: github:com/deckarep/golang-set
+    location: github.com/deckarep/golang-set
