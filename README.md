@@ -54,5 +54,5 @@ UserType = 255 // 负责人
 # For Reservation.OperationType
 ```txt
 1 // 新加入Reservation
-2 // 
+2 // 批准Reservation
 ```
