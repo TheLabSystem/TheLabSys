@@ -55,4 +55,5 @@ UserType = 255 // 负责人
 ```txt
 1 // 新加入Reservation
 2 // 批准Reservation
+3 // 拒绝Reservation
 ```
