@@ -6,10 +6,10 @@ import (
 	"TheLabSystem/Controller/DeviceController"
 	"TheLabSystem/Controller/MentalListController"
 	"TheLabSystem/Controller/NoticeController"
+	"TheLabSystem/Controller/ReportFormController"
 	"TheLabSystem/Controller/ReservationController"
 	"TheLabSystem/Controller/UserServiceController"
 	"TheLabSystem/Controller/VerifyCodeController"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -59,4 +59,7 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/reservation/getPersonalReservations", ReservationController.ReservationController{}.GetPersonalReservations)
 	g.POST("/reservation/getReservationInfoByReservationID", ReservationController.ReservationController{}.GetReservationInfo)
 	g.POST("/reservation/getReservationDetails", ReservationController.ReservationController{}.GetReservationDetailsController)
+
+	// reportForm
+	g.POST("/reportForm/getReportForm", ReportFormController.ReportFormController{}.GetReportForm)
 }
