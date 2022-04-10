@@ -16,10 +16,16 @@ import (
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"TheLabSystem/Types/ServiceType/ReservationInfo"
 	"TheLabSystem/Types/ServiceType/ReservationRecord"
+	"TheLabSystem/Types/ServiceType/User"
 	"fmt"
 	mapset "github.com/deckarep/golang-set"
 	"time"
 )
+
+type Approval struct {
+	reservation Reservation.Reservation
+	user        User.User
+}
 
 type ReservationService struct {
 }
@@ -105,31 +111,40 @@ func (service ReservationService) RevertReservation(username string, reservation
 	}
 	return ErrNo.OK
 }
-func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]Reservation.Reservation, ErrNo.ErrNo) {
+func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]GetApprovalRequestAndResponse.Approval, ErrNo.ErrNo) {
+	var approval []GetApprovalRequestAndResponse.Approval
 	var reservation []Reservation.Reservation
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
-		return reservation, ErrNo.UnknownError
+		return approval, ErrNo.UnknownError
 	} else if user.Username == "" {
-		return reservation, ErrNo.LoginRequired
+		return approval, ErrNo.LoginRequired
 	}
 	if request.Status == 1 {
 		reservation, err = ReservationDao.FindAllReservation()
 		if err != nil {
-			return reservation, ErrNo.UnknownError
+			return approval, ErrNo.UnknownError
 		}
 	} else if request.Status == 2 {
 		reservation, err = ReservationDao.FindApprovalReservation()
 		if err != nil {
-			return reservation, ErrNo.UnknownError
+			return approval, ErrNo.UnknownError
 		}
 	} else if request.Status == 3 {
 		reservation, err = ReservationDao.FindDisapprovalReservation()
 		if err != nil {
-			return reservation, ErrNo.UnknownError
+			return approval, ErrNo.UnknownError
 		}
 	}
-	return reservation, ErrNo.OK
+	approval = make([]GetApprovalRequestAndResponse.Approval, len(reservation), len(reservation))
+	for key := range reservation {
+		approval[key].ReservationRes = reservation[key]
+		approval[key].UserRes, err = UserDao.FindUserByID(reservation[key].ApplicantID)
+		if err != nil {
+			return nil, ErrNo.UnknownError
+		}
+	}
+	return approval, ErrNo.OK
 }
 func (service ReservationService) SetApproval(username string, request *SetApprovalRequestAndResponse.SetApprovalRequest) ErrNo.ErrNo {
 	reservation, errB := ReservationDao.FindReservationByID(request.ReservationID)
