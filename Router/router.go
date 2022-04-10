@@ -58,4 +58,5 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/reservation/setApproval", ReservationController.ReservationController{}.SetApproval)
 	g.GET("/reservation/getPersonalReservations", ReservationController.ReservationController{}.GetPersonalReservations)
 	g.GET("/reservation/getReservationInfoByReservationID", ReservationController.ReservationController{}.GetReservationInfo)
+	g.GET("/reservation/getReservationDetails", ReservationController.ReservationController{}.GetReservationDetailsController)
 }
