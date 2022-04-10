@@ -2,7 +2,7 @@
 
 # How to Use the Project?
 
-# Install golang
+## Install golang
 
 Go is a wonderful programming language.You have to install it before using our programs.
 If you have already installed it, you can skip this step.
@@ -12,11 +12,11 @@ sudo apt-get install golang-go
 ```
 If your computer is not a Linux one, or you don't really enjoy the terminal,see the [installation guide](https://golang.org/doc/install) for more information.
 
-# Download the Project
+## Download the Project
 
 You can download the project from [GitHub]("https://github.com/TheLabSystem/TheLabSys").
 
-# Install some dependencies And Change the Directory
+## Install some dependencies And Change the Directory
 
 Some dependencies are required to run the project.
 See Config/Config.yaml for more information.
@@ -28,15 +28,16 @@ go get github.com/gin-gonic/gin
 go get github.com/deckarep/golang-set
 ```
 
-# Run the Project
+## Run the Project
 
 If you have installed the dependencies, you can run the project.
 ```
 go run main.go
 ```
 
+## Below Are Some Type Definitions
 
-# For Code
+### For Code
 
 ```txt
 OK                 ErrNo = 0
@@ -54,7 +55,7 @@ UnknownError ErrNo = 255 // 未知错误
 ```
 
 
-# For Device
+### For Device
 
 ```txt
 Status = 2//设备可用
@@ -62,14 +63,14 @@ Status = 1//设备不可用
 Status = -1//设备已损坏
 ```
 
-# For Bill
+### For Bill
 
 ```txt
 Status = 2//账单未支付
 Status = 1//账单已支付
 Status = -1//账单已取消
 ```
-# For UserType
+### For UserType
 
 ```txt
 UserType = 1 // 外来人员
@@ -81,7 +82,7 @@ UserType = 5 // 外部接口（财务处）
 UserType = 255 // 负责人
 ```
 
-# For Reservation.OperationType
+### For Reservation.OperationType
 ```txt
 1 // 新加入Reservation
 2 // 批准Reservation
