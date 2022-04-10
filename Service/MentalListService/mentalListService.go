@@ -73,6 +73,7 @@ func (service MentalListService) ViewStudent(username string) ([]User.User, ErrN
 	if errB != nil {
 		return res, ErrNo.UnknownError
 	}
+	res = make([]User.User, len(rec), len(rec))
 	for key := range rec {
 		res[key], errA = UserDao.FindUserByID(rec[key].StudentID)
 		if errA != nil {
