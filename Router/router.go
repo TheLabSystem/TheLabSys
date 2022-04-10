@@ -54,9 +54,9 @@ func RegisterRouter(r *gin.Engine) {
 	// reservation
 	g.POST("/reservation/submitReservation", ReservationController.ReservationController{}.SubmitReservation)
 	g.POST("/reservation/revertReservation", ReservationController.ReservationController{}.RevertReservation)
-	g.GET("/reservation/getApproval", ReservationController.ReservationController{}.GetApproval)
+	g.POST("/reservation/getApproval", ReservationController.ReservationController{}.GetApproval)
 	g.POST("/reservation/setApproval", ReservationController.ReservationController{}.SetApproval)
-	g.GET("/reservation/getPersonalReservations", ReservationController.ReservationController{}.GetPersonalReservations)
-	g.GET("/reservation/getReservationInfoByReservationID", ReservationController.ReservationController{}.GetReservationInfo)
-	g.GET("/reservation/getReservationDetails", ReservationController.ReservationController{}.GetReservationDetailsController)
+	g.POST("/reservation/getPersonalReservations", ReservationController.ReservationController{}.GetPersonalReservations)
+	g.POST("/reservation/getReservationInfoByReservationID", ReservationController.ReservationController{}.GetReservationInfo)
+	g.POST("/reservation/getReservationDetails", ReservationController.ReservationController{}.GetReservationDetailsController)
 }

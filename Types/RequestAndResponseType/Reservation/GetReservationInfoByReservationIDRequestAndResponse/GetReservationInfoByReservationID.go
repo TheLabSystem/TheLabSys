@@ -11,7 +11,7 @@ type GetReservationInfoByReservationIDRequest struct {
 type GetReservationInfoByReservationIDResponse struct {
 	Code ErrNo.ErrNo `json:"Code"`
 	Data struct {
-		ReservationInfo ReservationInfo.ReservationInfo `json:"reservationInfo"`
-		Message         string                          `json:"message"`
+		ReservationInfos []ReservationInfo.ReservationInfo `json:"reservationInfos"`
+		Message          string                            `json:"message"`
 	}
 }

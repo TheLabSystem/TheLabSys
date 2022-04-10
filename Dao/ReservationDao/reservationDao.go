@@ -144,7 +144,7 @@ func FindApprovalReservation() ([]Reservation.Reservation, error) {
 			if err != nil {
 				fmt.Println("error!")
 			}
-			day, _ := time.Parse("2006-01-02", info.ReservationDay)
+			day, _ := time.Parse("2006-01-02", info[key].ReservationDay)
 			if day.Before(time.Now()) {
 				reservation[i] = convertDaoToReservation(reservationDao[key])
 				i++

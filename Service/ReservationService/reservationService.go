@@ -245,9 +245,9 @@ func (service ReservationService) GetPersonalReservations(username string) ([]Re
 		return res, ErrNo.OK
 	}
 }
-func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) (ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
+func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) ([]ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
 	user, err := UserDao.FindUserByUsername(username)
-	var res ReservationInfo.ReservationInfo
+	var res []ReservationInfo.ReservationInfo
 	if err != nil {
 		return res, ErrNo.UnknownError
 	} else if user.Username == "" {
