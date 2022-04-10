@@ -30,6 +30,7 @@ func (service ReportFormService) GetReportForm(form *ReportForm.ReportForm, user
 		if tm2, err = time.Parse("2006-01-12", form.EndDay); err != nil {
 			return ErrNo.ParamInvalid
 		}
+
 		fmt.Println(tm1, tm2)
 		return ErrNo.OK
 	} else {

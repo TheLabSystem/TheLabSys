@@ -128,11 +128,10 @@ func (controller ReservationController) GetReservationInfo(c *gin.Context) {
 		c.JSON(http.StatusOK, response)
 		return
 	}
-	response.Data.ReservationInfos, response.Code = ReservationService.ReservationService{}.GetReservationByReservationID(cookie, request.ReservationID)
+	response.Data.Reservation, response.Data.ReservationInfos, response.Code = ReservationService.ReservationService{}.GetReservationByReservationID(cookie, request.ReservationID)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 }
-
 func (controller ReservationController) GetReservationDetailsController(c *gin.Context) {
 	var request = &GetReservationDetailsRequestAndResponse.GetReservationDetailsRequest{}
 	var response = &GetReservationDetailsRequestAndResponse.GetReservationDetailsResponse{}
