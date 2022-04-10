@@ -57,6 +57,7 @@ func convertReservationRecordToDao(rr ReservationRecord.ReservationRecord) Reser
 }
 func InsertReservationRecord(rr ReservationRecord.ReservationRecord) error {
 	var rrDao = convertReservationRecordToDao(rr)
+	rrDao.OperatingDay = rrDao.CreatedAt.Format("2006-04-02")
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
 			if err := tx.Create(&rrDao).Error; err != nil {
