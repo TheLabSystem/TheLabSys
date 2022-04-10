@@ -138,14 +138,21 @@ func FindApprovalReservation() ([]Reservation.Reservation, error) {
 		fmt.Println("查找预约出现错误")
 	} else {
 		var i = 0
+		var flag bool
 		reservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))
 		for key := 0; key < len(reservationDao); key++ {
 			info, err := ReservationInfoDao.FindInfoByReservationID(reservationDao[key].ID)
 			if err != nil {
 				fmt.Println("error!")
 			}
-			day, _ := time.Parse("2006-01-02", info[key].ReservationDay)
-			if day.Before(time.Now()) {
+			flag = true
+			for j := 0; j < len(info); j++ {
+				day, _ := time.Parse("2006-01-02", info[j].ReservationDay)
+				if day.Before(time.Now()) {
+					flag = false
+				}
+			}
+			if flag == true {
 				reservation[i] = convertDaoToReservation(reservationDao[key])
 				i++
 			}

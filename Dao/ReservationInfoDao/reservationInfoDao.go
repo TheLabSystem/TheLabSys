@@ -12,6 +12,7 @@ type ReservationInfoDao struct {
 	gorm.Model
 	ReservationID   uint   `gorm:"uint"`
 	DeviceID        uint   `gorm:"uint"`
+	DeviceTypeInfo  string `gorm:"type:string"`
 	ReservationDay  string `gorm:"string"`
 	ReservationTime int    `gorm:"int"`
 }
@@ -38,6 +39,7 @@ func convertInfoToDao(info ReservationInfo.ReservationInfo) ReservationInfoDao {
 	return ReservationInfoDao{
 		ReservationID:   info.ReservationID,
 		DeviceID:        info.DeviceID,
+		DeviceTypeInfo:  info.DeviceTypeInfo,
 		ReservationDay:  info.ReservationDay,
 		ReservationTime: info.ReservationTime,
 	}
@@ -47,6 +49,7 @@ func convertDaoToInfo(dao ReservationInfoDao) ReservationInfo.ReservationInfo {
 		ID:              dao.ID,
 		ReservationID:   dao.ReservationID,
 		DeviceID:        dao.DeviceID,
+		DeviceTypeInfo:  dao.DeviceTypeInfo,
 		ReservationDay:  dao.ReservationDay,
 		ReservationTime: dao.ReservationTime,
 	}
