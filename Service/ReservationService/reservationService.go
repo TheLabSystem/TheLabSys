@@ -13,6 +13,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
 	"TheLabSystem/Types/ServiceType/Device"
+	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"TheLabSystem/Types/ServiceType/ReservationInfo"
 	"TheLabSystem/Types/ServiceType/ReservationRecord"
@@ -54,6 +55,11 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	// check if there are still enough device
 	var devices []Device.Device
 	devices, err = DeviceDao.FindDeviceByType(request.DeviceType)
+	var deviceTypeInfo DeviceTypeInfo.DeviceTypeInfo
+	deviceTypeInfo, err = DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(request.DeviceType)
+	if err != nil {
+		return ErrNo.UnknownError
+	}
 	if len(devices) <= request.Num {
 		return ErrNo.ParamInvalid
 	}
@@ -81,14 +87,10 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 		return ErrNo.UnknownError
 	}
 	for i := 0; i < request.Num; i++ {
-		typeInfo, errB := DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(devices[i].DeviceTypeID)
-		if errB != nil {
-			return ErrNo.UnknownError
-		}
 		info := ReservationInfo.ReservationInfo{
 			ReservationID:   reservation.ReservationID,
 			DeviceID:        devices[i].DeviceID,
-			DeviceTypeInfo:  typeInfo.DeviceInfo,
+			DeviceTypeInfo:  deviceTypeInfo.DeviceInfo,
 			ReservationDay:  request.Day,
 			ReservationTime: request.Time,
 		}
@@ -98,7 +100,6 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	}
 	return ErrNo.OK
 }
-
 func (service ReservationService) RevertReservation(username string, reservationID uint) ErrNo.ErrNo {
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
@@ -284,20 +285,25 @@ func (service ReservationService) GetPersonalReservations(username string) ([]Re
 		return res, ErrNo.OK
 	}
 }
-func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) ([]ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
+func (service ReservationService) GetReservationByReservationID(username string, reservationID uint) (Reservation.Reservation, []ReservationInfo.ReservationInfo, ErrNo.ErrNo) {
 	user, err := UserDao.FindUserByUsername(username)
 	var res []ReservationInfo.ReservationInfo
+	var res1 Reservation.Reservation
 	if err != nil {
-		return res, ErrNo.UnknownError
+		return res1, nil, ErrNo.UnknownError
 	} else if user.Username == "" {
-		return res, ErrNo.LoginRequired
+		return res1, nil, ErrNo.LoginRequired
 	}
 	res, err = ReservationInfoDao.FindInfoByReservationID(reservationID)
 	if err != nil {
-		return res, ErrNo.UnknownError
-	} else {
-		return res, ErrNo.OK
+		return res1, nil, ErrNo.UnknownError
 	}
+	res1, err = ReservationDao.FindReservationByID(reservationID)
+	if err != nil {
+		return res1, nil, ErrNo.UnknownError
+	}
+
+	return res1, res, ErrNo.OK
 }
 func (service ReservationService) GetReservationDetails(username string, day string, deviceTypeID uint) ([]int, ErrNo.ErrNo) {
 	user, err := UserDao.FindUserByUsername(username)

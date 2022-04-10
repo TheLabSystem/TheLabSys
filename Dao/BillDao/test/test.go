@@ -1,4 +1,6 @@
-package main
+//package main
+
+package test
 
 import (
 	"TheLabSystem/Dao/BillDao"
