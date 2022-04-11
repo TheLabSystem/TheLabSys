@@ -123,12 +123,12 @@ func FindAllReservation() ([]Reservation.Reservation, error) {
 	}
 	return reservation, err
 }
-func FindApprovalReservation() ([]Reservation.Reservation, error) {
+func FindApprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
 	var reservationDao []ReservationDao
 	var reservation []Reservation.Reservation
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("status=1 or status=2 or status=3").Find(&reservationDao).Error; err != nil {
+			if err := tx.Where("applicant_id=? and status=1 or status=2 or status=3", id).Find(&reservationDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -160,12 +160,12 @@ func FindApprovalReservation() ([]Reservation.Reservation, error) {
 	}
 	return reservation, err
 }
-func FindDisapprovalReservation() ([]Reservation.Reservation, error) {
+func FindDisapprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
 	var reservationDao []ReservationDao
 	var reservation []Reservation.Reservation
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("status!=1 and status!=2 and status!=3").Find(&reservationDao).Error; err != nil {
+			if err := tx.Where("status!=1 and status!=2 and status!=3 and applicant_id=?", id).Find(&reservationDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -187,7 +187,7 @@ func FindReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
 	var reservations []Reservation.Reservation
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where(&Reservation.Reservation{ApplicantID: id}).Find(&reservationDaos).Error; err != nil {
+			if err := tx.Where(&ReservationDao{ApplicantID: id}).Find(&reservationDaos).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -196,7 +196,7 @@ func FindReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return reservations, nil
 	} else if err != nil {
-		fmt.Println("Error happened in when finding reservation by applicantID in function FindReservationByApplicantID")
+		fmt.Println("Error happened when finding reservation by applicantID in function FindReservationByApplicantID")
 	} else {
 		reservations = make([]Reservation.Reservation, len(reservationDaos), len(reservationDaos))
 		for key := range reservationDaos {
