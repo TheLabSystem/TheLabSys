@@ -37,7 +37,7 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/notice/updateNotice", NoticeController.NoticeController{}.UpdateNotice)
 
 	// bill
-	g.GET("/bill/getBill", BillController.BillController{}.GetBill)
+	g.POST("/bill/getBill", BillController.BillController{}.GetBill)
 	g.POST("/bill/payBill", BillController.BillController{}.PayBill)
 
 	// mentorList service

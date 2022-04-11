@@ -95,7 +95,7 @@ func FindReservationByID(id uint) (Reservation.Reservation, error) {
 			return nil
 		})
 	if err != nil {
-		fmt.Println("查找预约出现错误")
+		fmt.Println("查找预约出现错误!")
 	} else {
 		reservation = convertDaoToReservation(reservationDao)
 	}

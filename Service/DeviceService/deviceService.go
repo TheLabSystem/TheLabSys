@@ -22,6 +22,7 @@ import (
 //DeleteDevice();
 //GetDeviceType(); Done
 //AddDevice(); Done
+//AllDone
 
 type DeviceService struct {
 }

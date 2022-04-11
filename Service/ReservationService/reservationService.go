@@ -2,6 +2,7 @@ package ReservationService
 
 import (
 	"TheLabSystem/Config/UserPermissionDecide"
+	"TheLabSystem/Dao/BillDao"
 	"TheLabSystem/Dao/DeviceDao"
 	"TheLabSystem/Dao/DeviceTypeInfoDao"
 	"TheLabSystem/Dao/ReservationDao"
@@ -12,6 +13,7 @@ import (
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/GetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SetApprovalRequestAndResponse"
 	"TheLabSystem/Types/RequestAndResponseType/Reservation/SubmitReservationRequestAndResponse"
+	"TheLabSystem/Types/ServiceType/Bill"
 	"TheLabSystem/Types/ServiceType/Device"
 	"TheLabSystem/Types/ServiceType/DeviceTypeInfo"
 	"TheLabSystem/Types/ServiceType/Reservation"
@@ -68,6 +70,7 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	}
 	if user.UserType == 1 {
 		reservation.Status = 21234
+
 	} else if user.UserType == 2 {
 		reservation.Status = 112
 	} else if user.UserType == 3 {
@@ -167,7 +170,7 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 					return ErrNo.UnknownError
 				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
@@ -182,7 +185,7 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 					return ErrNo.UnknownError
 				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
@@ -196,8 +199,16 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 				if err := ReservationDao.UpdateReservation(request.ReservationID, 2234); err != nil {
 					return ErrNo.UnknownError
 				}
+				if err := BillDao.InsertBill(Bill.Bill{
+					ReservationID: request.ReservationID,
+					PayerID:       reservation.ApplicantID,
+					Money:         request.Money,
+					BillStatus:    2,
+				}); err != nil {
+					return ErrNo.UnknownError
+				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
@@ -212,7 +223,7 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 					return ErrNo.UnknownError
 				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
@@ -227,7 +238,7 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 					return ErrNo.UnknownError
 				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
@@ -242,12 +253,30 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 					return ErrNo.UnknownError
 				}
 			} else if request.Approval == 2 {
-				if err := ReservationDao.UpdateReservation(request.ReservationID, -1); err != nil {
+				if err := ReservationDao.UpdateReservation(request.ReservationID, -2); err != nil {
 					return ErrNo.UnknownError
 				}
 			}
 		} else {
 			return ErrNo.PermDenied
+		}
+	}
+	if request.Approval == 1 {
+		if err := ReservationRecordDao.InsertReservationRecord(ReservationRecord.ReservationRecord{
+			ReservationID: request.ReservationID,
+			OperatorID:    user.UserID,
+			OperationType: 2,
+		}); err != nil {
+			return ErrNo.UnknownError
+		}
+	}
+	if request.Approval == 2 {
+		if err := ReservationRecordDao.InsertReservationRecord(ReservationRecord.ReservationRecord{
+			ReservationID: request.ReservationID,
+			OperatorID:    user.UserID,
+			OperationType: 3,
+		}); err != nil {
+			return ErrNo.UnknownError
 		}
 	}
 	return ErrNo.OK
