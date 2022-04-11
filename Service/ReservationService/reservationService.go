@@ -143,17 +143,17 @@ func (service ReservationService) GetApproval(username string, request *GetAppro
 		return approval, ErrNo.LoginRequired
 	}
 	if request.Status == 1 {
-		reservation, err = ReservationDao.FindAllReservation()
+		reservation, err = ReservationDao.FindReservationByApplicantID(user.UserID)
 		if err != nil {
 			return approval, ErrNo.UnknownError
 		}
 	} else if request.Status == 2 {
-		reservation, err = ReservationDao.FindApprovalReservation()
+		reservation, err = ReservationDao.FindApprovalReservationByApplicantID(user.UserID)
 		if err != nil {
 			return approval, ErrNo.UnknownError
 		}
 	} else if request.Status == 3 {
-		reservation, err = ReservationDao.FindDisapprovalReservation()
+		reservation, err = ReservationDao.FindDisapprovalReservationByApplicantID(user.UserID)
 		if err != nil {
 			return approval, ErrNo.UnknownError
 		}
