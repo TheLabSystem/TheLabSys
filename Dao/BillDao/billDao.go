@@ -119,3 +119,21 @@ func UpdateBillStatus(id uint, status int) error {
 	}
 	return err
 }
+func FindBillByReservationID(id uint) (Bill.Bill, error) {
+	var bill Bill.Bill
+	var billDao BillDao
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Where(&BillDao{ReservationID: id}).Find(&billDao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	if err != nil {
+		fmt.Println("Error happened when finding bills in function BillDao.FindBillByReservationID()")
+	} else {
+		bill = convertDaoToBill(billDao)
+	}
+	return bill, err
+}
