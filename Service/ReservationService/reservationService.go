@@ -113,6 +113,24 @@ func (service ReservationService) RevertReservation(username string, reservation
 	if ReservationDao.UpdateReservation(reservationID, -1) != nil {
 		return ErrNo.UnknownError
 	}
+	if user.UserType == 1 {
+		var bill Bill.Bill
+		bill, err = BillDao.FindBillByReservationID(reservationID)
+		if err != nil {
+			return ErrNo.UnknownError
+		}
+		if bill.BillStatus == 1 {
+			user.Money += 0.95 * bill.Money
+			err = BillDao.UpdateBillStatus(bill.BillID, -1)
+			if err != nil {
+				return ErrNo.UnknownError
+			}
+			err = UserDao.UpdateUser(user)
+			if err != nil {
+				return ErrNo.UnknownError
+			}
+		}
+	}
 	return ErrNo.OK
 }
 func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]GetApprovalRequestAndResponse.Approval, ErrNo.ErrNo) {
