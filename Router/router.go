@@ -24,12 +24,13 @@ func RegisterRouter(r *gin.Engine) {
 	g.POST("/user/changeUserInfo", UserServiceController.UserServiceController{}.ChangeUserInfo)
 	g.POST("/user/register", UserServiceController.UserServiceController{}.RegisterUser)
 	g.POST("/user/addMoney", UserServiceController.UserServiceController{}.AddMoney)
-
+	g.POST("/user/getUserInfo", UserServiceController.UserServiceController{}.FindUserInfo)
+	
 	// verify code
 	g.POST("/verifyCode/addVerifyCode", VerifyCodeController.VerifyCodeController{}.AddVerifyCodeController)
 	g.POST("/verifyCode/viewAllVerifyCode", VerifyCodeController.VerifyCodeController{}.ViewAllVerifyCode)
 	g.POST("/verifyCode/deleteVerifyCode", VerifyCodeController.VerifyCodeController{}.DeleteVerifyCode)
-
+	
 	// notice
 	g.POST("/notice/addNotice", NoticeController.NoticeController{}.AddNotice)
 	g.GET("/notice/getNotice", NoticeController.NoticeController{}.GetNoticeList)
