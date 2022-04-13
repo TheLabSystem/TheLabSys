@@ -42,7 +42,7 @@ func (billService BillService) PayBill(billID uint, username string) ErrNo.ErrNo
 		return ErrNo.MoneyNotEnough
 	} else {
 		if err := UserDao.UpdateMoney(user, user.Money-bill.Money); err != nil {
-			return ErrNo.PermDenied
+			return ErrNo.UnknownError
 		}
 		if err := BillDao.UpdateBillStatus(billID, 1); err != nil {
 			return ErrNo.UnknownError
