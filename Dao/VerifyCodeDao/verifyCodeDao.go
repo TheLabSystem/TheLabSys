@@ -88,6 +88,9 @@ func ViewVerifyCode() ([]VerifyCode.VerifyCode, error) {
 	return res, err
 }
 func CheckVerifyCode(code int, userType int) (bool, error) {
+	if userType == 1 {
+		return true, nil
+	}
 	var daos []VerifyCodeDao
 	err := db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Where(&VerifyCodeDao{VerifyCode: code}).Find(&daos).Error; err != nil {
