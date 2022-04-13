@@ -51,8 +51,9 @@ func InsertVerifyCode(code int, userType int) error {
 	return err
 }
 func DeleteVerifyCode(code int) error {
+	fmt.Println(code)
 	err := db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("verify_code = ?", code).Delete(&VerifyCodeDao{}).Error; err != nil {
+		if err := tx.Where("verify_code=?", code).Delete(&VerifyCodeDao{}).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
