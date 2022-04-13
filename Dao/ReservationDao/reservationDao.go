@@ -123,12 +123,12 @@ func FindAllReservation() ([]Reservation.Reservation, error) {
 	}
 	return reservation, err
 }
-func FindApprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
+func FindApprovalReservation(userType int) ([]Reservation.Reservation, error) {
 	var reservationDao []ReservationDao
 	var reservation []Reservation.Reservation
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("applicant_id=? and status=1 or status=2 or status=3", id).Find(&reservationDao).Error; err != nil {
+			if err := tx.Where("status!=1 and status!=2 and status!=3").Find(&reservationDao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}
@@ -139,7 +139,6 @@ func FindApprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, e
 	} else {
 		var i = 0
 		var flag bool
-		reservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))
 		for key := 0; key < len(reservationDao); key++ {
 			info, err := ReservationInfoDao.FindInfoByReservationID(reservationDao[key].ID)
 			if err != nil {
@@ -153,30 +152,23 @@ func FindApprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, e
 				}
 			}
 			if flag == true {
-				reservation[i] = convertDaoToReservation(reservationDao[key])
-				i++
+				if userType == 3 {
+					if reservationDao[i].Status == 112 {
+						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
+						i++
+					}
+				} else if userType == 4 {
+					if reservationDao[i].Status == 12 || reservationDao[i].Status == 21234 || reservationDao[i].Status == 24 || reservationDao[i].Status == 32 {
+						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
+						i++
+					}
+				} else if userType == 255 {
+					if reservationDao[i].Status == 234 {
+						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
+						i++
+					}
+				}
 			}
-		}
-	}
-	return reservation, err
-}
-func FindDisapprovalReservationByApplicantID(id uint) ([]Reservation.Reservation, error) {
-	var reservationDao []ReservationDao
-	var reservation []Reservation.Reservation
-	err := db.Transaction(
-		func(tx *gorm.DB) error {
-			if err := tx.Where("status!=1 and status!=2 and status!=3 and applicant_id=?", id).Find(&reservationDao).Error; err != nil {
-				tx.Rollback()
-				return err
-			}
-			return nil
-		})
-	if err != nil {
-		fmt.Println("查找预约出现错误")
-	} else {
-		reservation = make([]Reservation.Reservation, len(reservationDao), len(reservationDao))
-		for key := range reservationDao {
-			reservation[key] = convertDaoToReservation(reservationDao[key])
 		}
 	}
 	return reservation, err

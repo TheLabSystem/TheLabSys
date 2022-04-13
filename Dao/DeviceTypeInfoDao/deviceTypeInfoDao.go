@@ -12,7 +12,7 @@ type DeviceTypeInfoDao struct {
 	gorm.Model
 	DeviceTypeID uint    `gorm:"type:uint"`
 	DeviceInfo   string  `gorm:"type:string"`
-	Money        float64 `json:"money"`
+	Money        float64 `gorm:"type:float"`
 }
 
 var db *gorm.DB
