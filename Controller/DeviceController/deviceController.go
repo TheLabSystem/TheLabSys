@@ -30,7 +30,7 @@ func (controller DeviceController) AddDevice(c *gin.Context) {
 		c.JSON(http.StatusOK, response)
 		return
 	}
-	response.Code = DeviceService.DeviceService{}.AddDevice(cookie, request.DeviceID, request.DeviceTypeID, request.DeviceInfo)
+	response.Code = DeviceService.DeviceService{}.AddDevice(cookie, request.DeviceID, request.DeviceTypeID, request.DeviceInfo, request.Money)
 	response.Data.Message = ErrorInformation.GenerateErrorInformation(response.Code)
 	c.JSON(http.StatusOK, response)
 	return
