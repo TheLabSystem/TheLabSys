@@ -57,6 +57,7 @@ func InsertDevice(device Device.Device) error {
 		})
 	if err != nil {
 		fmt.Println("Error happened when inserting devices in function DeviceDao.InsertDevice()")
+		fmt.Println(err)
 	}
 	return err
 }

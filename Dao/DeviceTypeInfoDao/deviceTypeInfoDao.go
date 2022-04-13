@@ -10,8 +10,9 @@ import (
 
 type DeviceTypeInfoDao struct {
 	gorm.Model
-	DeviceTypeID uint   `gorm:"type:uint"`
-	DeviceInfo   string `gorm:"type:string"`
+	DeviceTypeID uint    `gorm:"type:uint"`
+	DeviceInfo   string  `gorm:"type:string"`
+	Money        float64 `json:"money"`
 }
 
 var db *gorm.DB
@@ -36,12 +37,14 @@ func convertDaoToDeviceTypeInfo(dao DeviceTypeInfoDao) DeviceTypeInfo.DeviceType
 	return DeviceTypeInfo.DeviceTypeInfo{
 		DeviceTypeID: dao.DeviceTypeID,
 		DeviceInfo:   dao.DeviceInfo,
+		Money:        dao.Money,
 	}
 }
 func convertDeviceTypeInfoToDao(info DeviceTypeInfo.DeviceTypeInfo) DeviceTypeInfoDao {
 	return DeviceTypeInfoDao{
 		DeviceInfo:   info.DeviceInfo,
 		DeviceTypeID: info.DeviceTypeID,
+		Money:        info.Money,
 	}
 }
 func FindDeviceTypeInfoByDeviceTypeID(id uint) (DeviceTypeInfo.DeviceTypeInfo, error) {
