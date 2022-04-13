@@ -62,7 +62,7 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	if err != nil {
 		return ErrNo.UnknownError
 	}
-	if len(devices) <= request.Num {
+	if len(devices) < request.Num {
 		return ErrNo.ParamInvalid
 	}
 	reservation := Reservation.Reservation{

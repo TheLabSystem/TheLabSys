@@ -56,6 +56,9 @@ func (service VerifyCodeService) DeleteVerifyCode(code int, username string) Err
 	if err != nil {
 		return ErrNo.UnknownError
 	}
+	if user.Username == "" {
+		return ErrNo.LoginRequired
+	}
 	if UserPermissionDecide.DeleteVerifyCode(user.UserType) {
 		err := VerifyCodeDao.DeleteVerifyCode(code)
 		if err != nil {
