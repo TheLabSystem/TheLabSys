@@ -27,7 +27,7 @@ import (
 type DeviceService struct {
 }
 
-func (service DeviceService) AddDevice(username string, deviceID uint, deviceTypeID uint, deviceInfo string) ErrNo.ErrNo {
+func (service DeviceService) AddDevice(username string, deviceID uint, deviceTypeID uint, deviceInfo string, money float64) ErrNo.ErrNo {
 	user, err := UserDao.FindUserByUsername(username)
 	if err != nil {
 		return ErrNo.UnknownError
@@ -59,10 +59,10 @@ func (service DeviceService) AddDevice(username string, deviceID uint, deviceTyp
 		return ErrNo.UnknownError
 	}
 	if _, err := DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(deviceTypeID); errors.Is(err, gorm.ErrRecordNotFound) {
-		//fmt.Println("已执行")
 		err := DeviceTypeInfoDao.InsertDeviceTypeInfo(DeviceTypeInfo.DeviceTypeInfo{
 			DeviceTypeID: deviceTypeID,
 			DeviceInfo:   deviceInfo,
+			Money:        money,
 		})
 		if err != nil {
 			return ErrNo.UnknownError
