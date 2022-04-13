@@ -101,7 +101,7 @@ func (service DeviceService) UpdateDevice(username string, deviceID uint, device
 	if user.Username == "" {
 		return ErrNo.LoginRequired
 	}
-	if !UserPermissionDecide.AddDevice(user.UserType) {
+	if !UserPermissionDecide.UpdateDevice(user.UserType) {
 		return ErrNo.PermDenied
 	}
 	if err := DeviceDao.UpdateDevice(Device.Device{
