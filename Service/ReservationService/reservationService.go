@@ -45,6 +45,7 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	if err != nil {
 		return ErrNo.ParamInvalid
 	}
+	fmt.Println(reservationDay)
 	if reservationDay.Before(time.Now()) {
 		return ErrNo.ParamInvalid
 	}
@@ -351,7 +352,7 @@ func (service ReservationService) GetReservationDetails(username string, day str
 			deviceIdSet.Add(devices[key].DeviceID)
 		}
 	}
-	fmt.Println(devices)
+	fmt.Println("getting devices", devices)
 	if err != nil {
 		return res, ErrNo.UnknownError
 	}
@@ -368,6 +369,9 @@ func (service ReservationService) GetReservationDetails(username string, day str
 		if deviceIdSet.Contains(info[key].DeviceID) && info[key].ReservationDay == day {
 			var reservation Reservation.Reservation
 			reservation, err = ReservationDao.FindReservationByID(info[key].ReservationID)
+			if reservation.Status >= 10 || reservation.Status < 0 {
+				continue
+			}
 			if err != nil {
 				return nil, ErrNo.UnknownError
 			} else {
