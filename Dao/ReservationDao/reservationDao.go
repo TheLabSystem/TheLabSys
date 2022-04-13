@@ -3,6 +3,7 @@ package ReservationDao
 import (
 	"TheLabSystem/Dao/DBAccessor"
 	"TheLabSystem/Dao/ReservationInfoDao"
+	"TheLabSystem/Types/ServiceType/MentorRecord"
 	"TheLabSystem/Types/ServiceType/Reservation"
 	"errors"
 	"fmt"
@@ -123,7 +124,7 @@ func FindAllReservation() ([]Reservation.Reservation, error) {
 	}
 	return reservation, err
 }
-func FindApprovalReservation(userType int) ([]Reservation.Reservation, error) {
+func FindApprovalReservation(userType int, mentorRecord []MentorRecord.MentorRecord) ([]Reservation.Reservation, error) {
 	var reservationDao []ReservationDao
 	var reservation []Reservation.Reservation
 	err := db.Transaction(
@@ -153,17 +154,27 @@ func FindApprovalReservation(userType int) ([]Reservation.Reservation, error) {
 			}
 			if flag == true {
 				if userType == 3 {
-					if reservationDao[i].Status == 112 {
-						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
-						i++
+					if reservationDao[key].Status == 112 {
+						var isMentor bool
+						isMentor = false
+						for b := 0; b < len(mentorRecord); b++ {
+							if reservationDao[key].ApplicantID == mentorRecord[b].StudentID {
+								isMentor = true
+								break
+							}
+						}
+						if isMentor {
+							reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
+							i++
+						}
 					}
 				} else if userType == 4 {
-					if reservationDao[i].Status == 12 || reservationDao[i].Status == 21234 || reservationDao[i].Status == 24 || reservationDao[i].Status == 32 {
+					if reservationDao[key].Status == 12 || reservationDao[key].Status == 21234 || reservationDao[key].Status == 24 || reservationDao[key].Status == 32 {
 						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
 						i++
 					}
 				} else if userType == 255 {
-					if reservationDao[i].Status == 234 {
+					if reservationDao[key].Status == 234 {
 						reservation = append(reservation, convertDaoToReservation(reservationDao[key]))
 						i++
 					}

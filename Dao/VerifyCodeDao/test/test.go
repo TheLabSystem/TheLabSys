@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	VerifyCodeDao.InsertVerifyCode(1234, 255)
+	VerifyCodeDao.InsertVerifyCode(1234, 2)
 	//VerifyCodeDao.DeleteVerifyCode(10203)
 }
