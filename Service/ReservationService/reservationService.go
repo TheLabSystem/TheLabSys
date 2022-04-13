@@ -5,6 +5,7 @@ import (
 	"TheLabSystem/Dao/BillDao"
 	"TheLabSystem/Dao/DeviceDao"
 	"TheLabSystem/Dao/DeviceTypeInfoDao"
+	"TheLabSystem/Dao/MentorRecordDao"
 	"TheLabSystem/Dao/ReservationDao"
 	"TheLabSystem/Dao/ReservationInfoDao"
 	"TheLabSystem/Dao/ReservationRecordDao"
@@ -45,7 +46,6 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	if err != nil {
 		return ErrNo.ParamInvalid
 	}
-	fmt.Println(reservationDay)
 	if reservationDay.Before(time.Now()) {
 		return ErrNo.ParamInvalid
 	}
@@ -143,7 +143,11 @@ func (service ReservationService) GetApproval(username string) ([]GetApprovalReq
 	} else if user.Username == "" {
 		return approval, ErrNo.LoginRequired
 	}
-	reservation, err = ReservationDao.FindApprovalReservation(user.UserType)
+	mentorRecord, err := MentorRecordDao.FindMentorRecordByTeacherID(user.UserID)
+	if err != nil {
+		return approval, ErrNo.UnknownError
+	}
+	reservation, err = ReservationDao.FindApprovalReservation(user.UserType, mentorRecord)
 	if err != nil {
 		return approval, ErrNo.UnknownError
 	}
