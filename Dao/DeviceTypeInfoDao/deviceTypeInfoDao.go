@@ -49,7 +49,7 @@ func FindDeviceTypeInfoByDeviceTypeID(id uint) (DeviceTypeInfo.DeviceTypeInfo, e
 	var info DeviceTypeInfo.DeviceTypeInfo
 	err := db.Transaction(
 		func(tx *gorm.DB) error {
-			if err := tx.Where("id=?", id).First(&dao).Error; err != nil {
+			if err := tx.Where(&DeviceTypeInfoDao{DeviceTypeID: id}).First(&dao).Error; err != nil {
 				tx.Rollback()
 				return err
 			}

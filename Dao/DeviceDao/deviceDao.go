@@ -163,3 +163,16 @@ func FindDeviceByTypeAllowRecordNotFound(id uint) ([]Device.Device, error) {
 	}
 	return devices, err
 }
+func DeleteDevice(id uint) error {
+	var dao DeviceDao
+	dao.ID = id
+	err := db.Transaction(
+		func(tx *gorm.DB) error {
+			if err := tx.Delete(&dao).Error; err != nil {
+				tx.Rollback()
+				return err
+			}
+			return nil
+		})
+	return err
+}
