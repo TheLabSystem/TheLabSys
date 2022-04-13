@@ -20,12 +20,14 @@ type ReservationController struct {
 }
 
 func (controller ReservationController) SubmitReservation(c *gin.Context) {
+
 	var request = &SubmitReservationRequestAndResponse.SubmitReservationRequest{}
 	var response = &SubmitReservationRequestAndResponse.SubmitReservationResponse{}
 	if err := c.ShouldBindJSON(request); err != nil {
 		c.JSON(http.StatusOK, gin.H{"error": err.Error()})
 		return
 	}
+	//fmt.Println(request)
 	cookie, err := c.Cookie("camp-session")
 	if err != nil {
 		response.Code = ErrNo.LoginRequired
