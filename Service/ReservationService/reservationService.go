@@ -134,7 +134,7 @@ func (service ReservationService) RevertReservation(username string, reservation
 
 	return ErrNo.OK
 }
-func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]GetApprovalRequestAndResponse.Approval, ErrNo.ErrNo) {
+func (service ReservationService) GetApproval(username string) ([]GetApprovalRequestAndResponse.Approval, ErrNo.ErrNo) {
 	var approval []GetApprovalRequestAndResponse.Approval
 	var reservation []Reservation.Reservation
 	user, err := UserDao.FindUserByUsername(username)
@@ -143,21 +143,9 @@ func (service ReservationService) GetApproval(username string, request *GetAppro
 	} else if user.Username == "" {
 		return approval, ErrNo.LoginRequired
 	}
-	if request.Status == 1 {
-		reservation, err = ReservationDao.FindReservationByApplicantID(user.UserID)
-		if err != nil {
-			return approval, ErrNo.UnknownError
-		}
-	} else if request.Status == 2 {
-		reservation, err = ReservationDao.FindApprovalReservationByApplicantID(user.UserID)
-		if err != nil {
-			return approval, ErrNo.UnknownError
-		}
-	} else if request.Status == 3 {
-		reservation, err = ReservationDao.FindDisapprovalReservationByApplicantID(user.UserID)
-		if err != nil {
-			return approval, ErrNo.UnknownError
-		}
+	reservation, err = ReservationDao.FindApprovalReservation(user.UserType)
+	if err != nil {
+		return approval, ErrNo.UnknownError
 	}
 	approval = make([]GetApprovalRequestAndResponse.Approval, len(reservation), len(reservation))
 	for key := range reservation {
@@ -218,10 +206,22 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 				if err := ReservationDao.UpdateReservation(request.ReservationID, 2234); err != nil {
 					return ErrNo.UnknownError
 				}
+				reservationInfo, err := ReservationInfoDao.FindInfoByReservationID(request.ReservationID)
+				if err != nil {
+					return ErrNo.UnknownError
+				}
+				device, err := DeviceDao.FindDeviceByDeviceID(reservationInfo[0].DeviceID)
+				if err != nil {
+					return ErrNo.UnknownError
+				}
+				deviceInfo, err := DeviceTypeInfoDao.FindDeviceTypeInfoByDeviceTypeID(device.DeviceTypeID)
+				if err != nil {
+					return ErrNo.UnknownError
+				}
 				if err := BillDao.InsertBill(Bill.Bill{
 					ReservationID: request.ReservationID,
 					PayerID:       reservation.ApplicantID,
-					Money:         request.Money,
+					Money:         deviceInfo.Money * float64(len(reservationInfo)),
 					BillStatus:    2,
 				}); err != nil {
 					return ErrNo.UnknownError
