@@ -124,10 +124,7 @@ func (service DeviceService) DeleteDevice(username string, deviceID uint) ErrNo.
 	if !UserPermissionDecide.AddDevice(user.UserType) {
 		return ErrNo.PermDenied
 	}
-	if err := DeviceDao.UpdateDevice(Device.Device{
-		DeviceID:     deviceID,
-		DeviceStatus: -1,
-	}); err != nil {
+	if err := DeviceDao.DeleteDevice(deviceID); err != nil {
 		return ErrNo.UnknownError
 	}
 	return ErrNo.OK

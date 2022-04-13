@@ -131,6 +131,7 @@ func (service ReservationService) RevertReservation(username string, reservation
 			}
 		}
 	}
+
 	return ErrNo.OK
 }
 func (service ReservationService) GetApproval(username string, request *GetApprovalRequestAndResponse.GetApprovalRequest) ([]GetApprovalRequestAndResponse.Approval, ErrNo.ErrNo) {
@@ -361,7 +362,7 @@ func (service ReservationService) GetReservationDetails(username string, day str
 	}
 	res = make([]int, 12, 12)
 	for key := range res {
-		res[key] = len(devices)
+		res[key] = len(deviceIdSet.ToSlice())
 	}
 	for key := range info {
 		if deviceIdSet.Contains(info[key].DeviceID) && info[key].ReservationDay == day {
