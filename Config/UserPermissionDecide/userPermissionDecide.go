@@ -23,3 +23,6 @@ func GetReportForm(UserType int) bool {
 func AddDevice(UserType int) bool {
 	return UserType == 255
 }
+func UpdateDevice(UserType int) bool {
+	return UserType == 4 || UserType == 255
+}
