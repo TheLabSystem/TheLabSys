@@ -9,7 +9,7 @@ func ViewVerifyCode(UserType int) bool {
 }
 
 func DeleteVerifyCode(UserType int) bool {
-	return UserType >= 4
+	return UserType == 255
 }
 
 func SetApproval(UserType int) bool {
