@@ -3,9 +3,8 @@ package SetApprovalRequestAndResponse
 import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
 
 type SetApprovalRequest struct {
-	ReservationID uint    `json:"reservation_id"`
-	Approval      int     `json:"approval"`
-	Money         float64 `json:"money"`
+	ReservationID uint `json:"reservation_id"`
+	Approval      int  `json:"approval"`
 }
 type SetApprovalResponse struct {
 	Code ErrNo.ErrNo `json:"Code"`
