@@ -3,7 +3,7 @@ package DeleteVerifyCodeRequestAndResponse
 import "TheLabSystem/Types/RequestAndResponseType/ErrNo"
 
 type DeleteVerifyCodeRequest struct {
-	VerifyCode int
+	VerifyCode int `json:"deleteVerifyCode"`
 }
 
 type DeleteVerifyCodeResponse struct {
