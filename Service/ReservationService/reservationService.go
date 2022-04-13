@@ -71,7 +71,6 @@ func (service ReservationService) SubmitReservation(username string, request *Su
 	}
 	if user.UserType == 1 {
 		reservation.Status = 21234
-
 	} else if user.UserType == 2 {
 		reservation.Status = 112
 	} else if user.UserType == 3 {
