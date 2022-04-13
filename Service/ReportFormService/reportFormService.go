@@ -64,11 +64,11 @@ func (service ReportFormService) GetReportForm(startDay string, endDay string, u
 			}
 			if applicant.UserType == 1 {
 				res.ForeignUserReservation++
-				if reservation.Status == 2 {
+				if reservation.Status < 10 && reservation.Status > 0 {
 					res.SuccessfulForeignUserReservation++
 				}
 				var bill Bill.Bill
-				bill, err = BillDao.FindBillByBillID(reservation.ReservationID)
+				bill, err = BillDao.FindBillByReservationID(reservation.ReservationID)
 				if err != nil {
 					fmt.Println(err)
 					return res, ErrNo.UnknownError
@@ -80,12 +80,12 @@ func (service ReportFormService) GetReportForm(startDay string, endDay string, u
 				}
 			} else if applicant.UserType == 2 {
 				res.StudentReservation++
-				if reservation.Status == 2 {
+				if reservation.Status < 10 && reservation.Status > 0 {
 					res.SuccessfulStudentReservation++
 				}
 			} else if applicant.UserType == 3 {
 				res.TeacherReservation++
-				if reservation.Status == 2 {
+				if reservation.Status < 10 && reservation.Status > 0 {
 					res.SuccessfulTeacherReservation++
 				}
 			}
