@@ -255,7 +255,7 @@ func (service ReservationService) SetApproval(username string, request *SetAppro
 		}
 	}
 	if reservation.Status == 24 {
-		if user.UserType == 255 {
+		if user.UserType == 4 {
 			if request.Approval == 1 {
 				if err := ReservationDao.UpdateReservation(request.ReservationID, 2); err != nil {
 					return ErrNo.UnknownError
