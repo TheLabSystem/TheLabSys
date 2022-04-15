@@ -1,7 +1,7 @@
 package UserPermissionDecide
 
 func AddVerifyCode(UserType int) bool {
-	return UserType >= 4
+	return UserType == 4 || UserType == 255
 }
 
 func ViewVerifyCode(UserType int) bool {
@@ -9,7 +9,7 @@ func ViewVerifyCode(UserType int) bool {
 }
 
 func DeleteVerifyCode(UserType int) bool {
-	return UserType == 255
+	return UserType == 4 || UserType == 255
 }
 
 func SetApproval(UserType int) bool {
